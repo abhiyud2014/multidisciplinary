@@ -1,0 +1,2701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Multidisciplinary Lab | Python & AI Copilot Handbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0e0e0e;
+  --paper: #f5f2eb;
+  --warm-white: #faf8f3;
+  --accent: #c94f1e;
+  --accent2: #2a6496;
+  --accent3: #2d7a4f;
+  --gold: #c8a84b;
+  --muted: #6b6558;
+  --border: #d8d3c8;
+  --card-bg: #ffffff;
+  --serif: 'DM Serif Display', Georgia, serif;
+  --sans: 'Outfit', sans-serif;
+  --mono: 'DM Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── NOISE TEXTURE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--paper); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+/* ── NAVIGATION ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(245,242,235,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.nav-logo span { color: var(--accent); }
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--accent); }
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 5px;
+}
+.nav-toggle span {
+  display: block;
+  width: 24px; height: 2px;
+  background: var(--ink);
+  transition: all 0.3s;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 100px 4rem 4rem;
+  position: relative;
+  overflow: hidden;
+  gap: 4rem;
+}
+
+.hero-bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.hero-bg-circle {
+  position: absolute;
+  right: -200px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 700px; height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,79,30,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-content { position: relative; z-index: 1; }
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  padding: 6px 14px;
+  border-radius: 2px;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.05em;
+}
+
+.hero-badge::before {
+  content: '';
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(2.8rem, 5vw, 4.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.5rem;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.hero-sub {
+  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 520px;
+  margin-bottom: 2rem;
+  font-weight: 300;
+  line-height: 1.7;
+}
+
+.hero-sub strong { color: var(--ink); font-weight: 600; }
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  padding: 14px 28px;
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+.btn-primary:hover { background: #a83d14; transform: translateY(-1px); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--ink);
+  padding: 13px 28px;
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1.5px solid var(--ink);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+.btn-secondary:hover { background: var(--ink); color: var(--paper); }
+
+/* Hero right panel — animated terminal */
+.hero-terminal {
+  position: relative;
+  z-index: 1;
+  background: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.25);
+  font-family: var(--mono);
+}
+
+.terminal-bar {
+  background: #2d2d2d;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.terminal-dots { display: flex; gap: 6px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; }
+.dot-red { background: #ff5f57; }
+.dot-yellow { background: #febc2e; }
+.dot-green { background: #28c840; }
+
+.terminal-title {
+  font-size: 0.75rem;
+  color: #888;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.terminal-body {
+  padding: 20px;
+  min-height: 340px;
+  font-size: 0.8rem;
+  line-height: 1.8;
+}
+
+.t-line { display: block; }
+.t-prompt { color: #28c840; }
+.t-cmd { color: #e2e2e2; }
+.t-comment { color: #666; }
+.t-output { color: #a8d8a8; }
+.t-string { color: #f1c27d; }
+.t-keyword { color: #79b8ff; }
+.t-num { color: #e5c07b; }
+.t-cursor {
+  display: inline-block;
+  width: 8px; height: 14px;
+  background: #e2e2e2;
+  vertical-align: middle;
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+.t-typed { overflow: hidden; white-space: nowrap; }
+.t-typed.line1 { animation: type 1.5s steps(40) 0.5s both; }
+.t-typed.line2 { animation: type 1.5s steps(40) 2.5s both; }
+.t-typed.line3 { animation: type 1s steps(30) 4.2s both; }
+.t-typed.line4 { animation: type 2s steps(60) 5.5s both; }
+.t-fade { opacity: 0; animation: fadein 0.3s forwards; }
+.t-fade.f1 { animation-delay: 2s; }
+.t-fade.f2 { animation-delay: 4s; }
+.t-fade.f3 { animation-delay: 5.3s; }
+.t-fade.f4 { animation-delay: 7.5s; }
+.t-fade.f5 { animation-delay: 8s; }
+.t-fade.f6 { animation-delay: 8.5s; }
+
+@keyframes type { from { width: 0; } to { width: 100%; } }
+@keyframes fadein { to { opacity: 1; } }
+
+/* ── STATS STRIP ── */
+.stats-strip {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 2rem 4rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  text-align: center;
+}
+
+.stat-item {}
+.stat-num {
+  font-family: var(--serif);
+  font-size: 2.8rem;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+.stat-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #888;
+  font-weight: 400;
+}
+
+/* ── SECTIONS ── */
+section { padding: 6rem 4rem; }
+
+.section-tag {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.section-title {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 1rem;
+}
+
+.section-desc {
+  font-size: 1rem;
+  color: var(--muted);
+  max-width: 620px;
+  line-height: 1.75;
+  font-weight: 300;
+}
+
+/* ── HOW IT WORKS ── */
+.how-it-works { background: var(--warm-white); }
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2px;
+  margin-top: 4rem;
+  background: var(--border);
+}
+
+.step-card {
+  background: var(--warm-white);
+  padding: 2.5rem 2rem;
+  position: relative;
+  transition: background 0.2s;
+}
+.step-card:hover { background: white; }
+
+.step-num {
+  font-family: var(--serif);
+  font-size: 5rem;
+  color: var(--border);
+  line-height: 1;
+  margin-bottom: 1rem;
+  display: block;
+  font-style: italic;
+}
+
+.step-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.step-desc {
+  font-size: 0.875rem;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.step-icon {
+  position: absolute;
+  top: 2.5rem;
+  right: 2rem;
+  font-size: 1.5rem;
+  opacity: 0.6;
+}
+
+/* ── DEPARTMENTS + USE-CASES ── */
+.use-cases { background: var(--paper); }
+
+.dept-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 3rem 0 2rem;
+}
+
+.dept-tab {
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 8px 18px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+.dept-tab:hover { border-color: var(--accent); color: var(--accent); }
+.dept-tab.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.cases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5px;
+  background: var(--border);
+}
+
+.case-card {
+  background: white;
+  padding: 2rem;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.25s;
+  border-top: 3px solid transparent;
+}
+.case-card:hover {
+  background: var(--warm-white);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+  z-index: 2;
+}
+.case-card.active { border-top-color: var(--accent); background: #fff8f5; }
+
+.case-dept-label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 2px;
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+.diff-badge {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  padding: 3px 8px;
+  border-radius: 2px;
+  float: right;
+  font-weight: 500;
+}
+.diff-beginner { background: #e8f5ee; color: #2d7a4f; }
+.diff-intermediate { background: #eee8f5; color: #5a3b8a; }
+
+.case-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  clear: both;
+}
+
+.case-desc {
+  font-size: 0.825rem;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-bottom: 1.25rem;
+}
+
+.case-meta {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: #999;
+  border-top: 1px solid var(--border);
+  padding-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.case-meta span b { color: #666; }
+
+.view-prompt-btn {
+  margin-top: 1rem;
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: gap 0.2s;
+}
+.view-prompt-btn:hover { gap: 10px; }
+
+/* ── PROMPT MODAL ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(14,14,14,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.modal-overlay.open { display: flex; animation: fadein 0.2s; }
+
+.modal {
+  background: white;
+  max-width: 780px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  border-radius: 4px;
+  box-shadow: 0 60px 120px rgba(0,0,0,0.3);
+  animation: slideup 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes slideup { from { transform: translateY(30px); opacity: 0; } }
+
+.modal-header {
+  padding: 2rem 2rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: none;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  width: 36px; height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: var(--muted);
+  transition: all 0.2s;
+}
+.modal-close:hover { background: var(--ink); color: white; border-color: var(--ink); }
+
+.modal-dept {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.4rem;
+}
+
+.modal-title {
+  font-family: var(--serif);
+  font-size: 1.6rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+  padding-right: 3rem;
+}
+
+.modal-badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.modal-badge {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  padding: 4px 10px;
+  border-radius: 2px;
+}
+.mb-dataset { background: #e8f0f8; color: var(--accent2); }
+.mb-tools { background: #f0f0f0; color: #555; }
+
+.modal-body { padding: 1.5rem 2rem 2rem; }
+
+.prompt-label {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.copy-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 6px 16px;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.copy-btn:hover { background: #a83d14; }
+.copy-btn.copied { background: var(--accent3); }
+
+.prompt-box {
+  background: #1a1a1a;
+  color: #e2e2e2;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.75;
+  padding: 1.5rem;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ── TIPS SECTION ── */
+.tips-section {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.tips-section .section-title { color: var(--paper); }
+.tips-section .section-tag { color: var(--gold); }
+
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5px;
+  margin-top: 3.5rem;
+  background: #333;
+}
+
+.tip-card {
+  background: #1a1a1a;
+  padding: 2rem;
+  transition: background 0.2s;
+}
+.tip-card:hover { background: #222; }
+
+.tip-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.tip-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--paper);
+}
+
+.tip-text {
+  font-size: 0.83rem;
+  color: #888;
+  line-height: 1.7;
+}
+
+.tip-code {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  background: #2d2d2d;
+  color: var(--gold);
+  padding: 8px 12px;
+  margin-top: 0.75rem;
+  border-radius: 2px;
+  display: block;
+  border-left: 3px solid var(--accent);
+}
+
+/* ── RESOURCE PERSON SECTION ── */
+.resource-section {
+  background: var(--warm-white);
+  border-top: 1px solid var(--border);
+}
+
+.resource-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3rem;
+  align-items: center;
+  max-width: 820px;
+}
+
+.resource-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #8b2a10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-size: 3rem;
+  color: white;
+  flex-shrink: 0;
+  font-style: italic;
+}
+
+.resource-name {
+  font-family: var(--serif);
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+}
+
+.resource-role {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+}
+
+.resource-bio {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 560px;
+}
+
+/* ── WORKSHOP INFO ── */
+.workshop-info {
+  background: var(--accent);
+  color: white;
+  padding: 5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.workshop-info h2 {
+  font-family: var(--serif);
+  font-size: 2.2rem;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.workshop-info p {
+  font-size: 0.95rem;
+  opacity: 0.9;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
+.workshop-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.workshop-detail {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: rgba(255,255,255,0.1);
+  padding: 1rem 1.25rem;
+  border-radius: 2px;
+}
+
+.wd-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.wd-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+  margin-bottom: 2px;
+}
+.wd-value { font-weight: 600; font-size: 0.95rem; }
+
+/* ── FOOTER ── */
+footer {
+  background: #0e0e0e;
+  color: #888;
+  padding: 3rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 2rem;
+  border-top: 1px solid #222;
+}
+
+.footer-title {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  color: var(--paper);
+  margin-bottom: 0.5rem;
+}
+
+.footer-sub {
+  font-size: 0.8rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.footer-right {
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: #444;
+  line-height: 1.8;
+}
+
+/* ── DEPT COLOR MAP ── */
+.dept-math    { background: #ede8fb; color: #3c2a9a; }
+.dept-physics { background: #dceaf7; color: #0f4a85; }
+.dept-chem    { background: #fbeae6; color: #8b2a10; }
+.dept-bio     { background: #d8f0e2; color: #0f5e3a; }
+.dept-bot     { background: #e8f3d8; color: #2d5e0a; }
+.dept-zoo     { background: #f5e8ed; color: #80244a; }
+.dept-econ    { background: #fdf0d4; color: #7a4e00; }
+.dept-biz     { background: #dceaf7; color: #0f3a65; }
+.dept-gis     { background: #d8ede8; color: #0a4a38; }
+
+/* ── SCROLL ANIMATIONS ── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+/* ── SEARCH ── */
+.search-bar {
+  display: flex;
+  gap: 0;
+  margin-bottom: 2rem;
+  max-width: 500px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1.5px solid var(--border);
+  border-right: none;
+  font-family: var(--sans);
+  font-size: 0.875rem;
+  background: white;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-input:focus { border-color: var(--accent); }
+
+.search-icon-btn {
+  background: var(--ink);
+  border: none;
+  padding: 0 18px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 100px 2rem 3rem;
+    gap: 3rem;
+  }
+  .hero-terminal { max-width: 480px; }
+  .stats-strip { grid-template-columns: repeat(2, 1fr); padding: 2rem; }
+  section { padding: 4rem 2rem; }
+  .workshop-info { grid-template-columns: 1fr; padding: 4rem 2rem; gap: 2rem; }
+  footer { grid-template-columns: 1fr; padding: 2rem; }
+  .footer-right { text-align: left; }
+  .resource-card { grid-template-columns: 1fr; gap: 1.5rem; }
+  .resource-avatar { width: 80px; height: 80px; font-size: 2rem; }
+}
+
+@media (max-width: 600px) {
+  nav { padding: 0 1.25rem; }
+  .nav-links { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--paper); flex-direction: column; padding: 1.5rem; gap: 1.5rem; border-bottom: 1px solid var(--border); z-index: 999; }
+  .nav-links.open { display: flex; }
+  .nav-toggle { display: flex; }
+  .stats-strip { grid-template-columns: 1fr 1fr; gap: 1rem; padding: 1.5rem; }
+  .stat-num { font-size: 2rem; }
+  .hero h1 { font-size: 2.4rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Multi<span>Lab</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about">About</a></li>
+    <li><a href="#howto">How To Use</a></li>
+    <li><a href="#usecases">Use-Cases</a></li>
+    <li><a href="#tips">AI Tips</a></li>
+    <li><a href="#workshop">Workshop</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="about">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-bg-circle"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">MSCB University · Workshop 2025</div>
+    <h1>The <em>Multidisciplinary</em> Lab Handbook</h1>
+    <p class="hero-sub">
+      A <strong>Python & AI Copilot</strong> resource for postgraduate students in 9 departments —
+      from pure sciences to social sciences and geospatial technology.
+      <br><br>
+      <strong>45 end-to-end simulation projects.</strong> Each with a ready-to-paste Google Colab Gemini prompt.
+    </p>
+    <div class="hero-actions">
+      <a href="#usecases" class="btn-primary">Browse Projects →</a>
+      <a href="#howto" class="btn-secondary">How To Use</a>
+    </div>
+  </div>
+
+  <div class="hero-terminal">
+    <div class="terminal-bar">
+      <div class="terminal-dots">
+        <div class="dot dot-red"></div>
+        <div class="dot dot-yellow"></div>
+        <div class="dot dot-green"></div>
+      </div>
+      <span class="terminal-title">Google Colab · Gemini AI</span>
+    </div>
+    <div class="terminal-body">
+<span class="t-line t-comment"># Multidisciplinary Lab — Postgrad Workshop</span>
+<span class="t-line t-comment"># Paste any prompt below into Colab's Gemini panel</span>
+<span class="t-line">&nbsp;</span>
+<span class="t-line t-fade f1"><span class="t-prompt">>>> </span><span class="t-cmd">Gemini Prompt:</span></span>
+<span class="t-line t-fade f2 t-typed line1"><span class="t-string">"I am a Physics MSc student..."</span></span>
+<span class="t-line">&nbsp;</span>
+<span class="t-line t-fade f3"><span class="t-comment"># Gemini generates complete notebook:</span></span>
+<span class="t-line t-fade f4 t-typed line2"><span class="t-keyword">import</span> numpy <span class="t-keyword">as</span> np</span>
+<span class="t-line t-fade f4"><span class="t-keyword">import</span> matplotlib.pyplot <span class="t-keyword">as</span> plt</span>
+<span class="t-line t-fade f4"><span class="t-keyword">from</span> scipy.integrate <span class="t-keyword">import</span> solve_ivp</span>
+<span class="t-line">&nbsp;</span>
+<span class="t-line t-fade f5"><span class="t-comment"># Pendulum chaos simulation</span></span>
+<span class="t-line t-fade f5 t-typed line3"><span class="t-keyword">def</span> double_pendulum(t, y, L, g):</span>
+<span class="t-line t-fade f5">    <span class="t-keyword">return</span> equations(t, y, L, g)</span>
+<span class="t-line">&nbsp;</span>
+<span class="t-line t-fade f6"><span class="t-output">✓ Simulation complete. 4 plots generated.</span></span>
+<span class="t-line t-fade f6"><span class="t-output">✓ Markdown explanations added.</span></span>
+<span class="t-line">&nbsp;</span>
+<span class="t-line"><span class="t-prompt">>>> </span><span class="t-cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stat-item">
+    <div class="stat-num">45</div>
+    <div class="stat-label">Simulation Projects</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">9</div>
+    <div class="stat-label">Departments</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">2</div>
+    <div class="stat-label">Difficulty Levels</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">100%</div>
+    <div class="stat-label">Colab-Ready</div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works" id="howto">
+  <span class="section-tag">Getting Started</span>
+  <h2 class="section-title">How to use these prompts</h2>
+  <p class="section-desc">No prior data science experience needed. Follow these steps in any Google Colab notebook using the built-in Gemini AI assistant.</p>
+
+  <div class="steps-grid">
+    <div class="step-card fade-up">
+      <span class="step-num">01</span>
+      <span class="step-icon">💻</span>
+      <div class="step-title">Open Google Colab</div>
+      <div class="step-desc">Go to <strong>colab.research.google.com</strong> and start a new notebook. Sign in with your Google account.</div>
+    </div>
+    <div class="step-card fade-up">
+      <span class="step-num">02</span>
+      <span class="step-icon">✨</span>
+      <div class="step-title">Open Gemini Panel</div>
+      <div class="step-desc">Click the <strong>Gemini star icon</strong> in the left sidebar of Colab to open the AI coding assistant panel.</div>
+    </div>
+    <div class="step-card fade-up">
+      <span class="step-num">03</span>
+      <span class="step-icon">📋</span>
+      <div class="step-title">Copy Your Prompt</div>
+      <div class="step-desc">Find your department's project below. Click <strong>"Copy Prompt"</strong> — copy the entire prompt text exactly.</div>
+    </div>
+    <div class="step-card fade-up">
+      <span class="step-num">04</span>
+      <span class="step-icon">🚀</span>
+      <div class="step-title">Paste & Generate</div>
+      <div class="step-desc">Paste the prompt into the Gemini input box and press Enter. Gemini will generate all code cells for you.</div>
+    </div>
+    <div class="step-card fade-up">
+      <span class="step-num">05</span>
+      <span class="step-icon">▶️</span>
+      <div class="step-title">Run the Notebook</div>
+      <div class="step-desc">Click <strong>"Insert"</strong> to add generated cells, then run each with <strong>Shift+Enter</strong> in sequence.</div>
+    </div>
+    <div class="step-card fade-up">
+      <span class="step-num">06</span>
+      <span class="step-icon">🔧</span>
+      <div class="step-title">Fix Errors with AI</div>
+      <div class="step-desc">If a cell fails, ask Gemini: <em>"Fix the error in the previous code cell"</em> — it will debug automatically.</div>
+    </div>
+  </div>
+</section>
+
+<!-- USE-CASES -->
+<section class="use-cases" id="usecases">
+  <span class="section-tag">All 45 Projects</span>
+  <h2 class="section-title">Browse by Department</h2>
+  <p class="section-desc">Click any project card to view and copy its complete Gemini prompt. Use the department tabs or search to filter.</p>
+
+  <div class="search-bar">
+    <input type="text" class="search-input" id="searchInput" placeholder="Search projects (e.g. NDVI, churn, pendulum…)">
+    <button class="search-icon-btn" aria-label="Search">🔍</button>
+  </div>
+
+  <div class="dept-tabs" id="deptTabs"></div>
+  <div class="cases-grid" id="casesGrid"></div>
+  <p id="noResults" style="display:none;text-align:center;padding:3rem;color:var(--muted);font-size:0.9rem;">No projects match your search.</p>
+</section>
+
+<!-- TIPS -->
+<section class="tips-section" id="tips">
+  <span class="section-tag">Pro Tips</span>
+  <h2 class="section-title">Getting More from AI Copilots</h2>
+  <p class="section-desc" style="color:#aaa;">Use these techniques with Gemini in Colab, VS Code Copilot, or any AI assistant to go further.</p>
+
+  <div class="tips-grid">
+    <div class="tip-card fade-up">
+      <span class="tip-icon">🎯</span>
+      <div class="tip-title">State your background first</div>
+      <div class="tip-text">Always begin your prompt by identifying yourself. The AI calibrates its explanations to your level.</div>
+      <code class="tip-code">"I am a Botany MSc student with basic Python..."</code>
+    </div>
+    <div class="tip-card fade-up">
+      <span class="tip-icon">🔗</span>
+      <div class="tip-title">Give exact data sources</div>
+      <div class="tip-text">Paste the exact API URL or dataset name. This prevents the AI from hallucinating nonexistent data sources.</div>
+      <code class="tip-code">"Download from: api.gbif.org/v1/occurrence/search"</code>
+    </div>
+    <div class="tip-card fade-up">
+      <span class="tip-icon">🐛</span>
+      <div class="tip-title">Debug with context</div>
+      <div class="tip-text">When pasting an error, include the full traceback. The AI can pinpoint the fix much faster with the complete error message.</div>
+      <code class="tip-code">"Fix this error: [paste full traceback here]"</code>
+    </div>
+    <div class="tip-card fade-up">
+      <span class="tip-icon">📦</span>
+      <div class="tip-title">Fix failing installs</div>
+      <div class="tip-text">If a pip install fails in Colab, ask specifically for the Colab-compatible install method.</div>
+      <code class="tip-code">"!pip install rdkit-pypi --quiet"</code>
+    </div>
+    <div class="tip-card fade-up">
+      <span class="tip-icon">📊</span>
+      <div class="tip-title">Ask for interpretation</div>
+      <div class="tip-text">After generating plots, ask Gemini to explain what the visualization reveals in the context of your subject domain.</div>
+      <code class="tip-code">"Explain what this NDVI heatmap shows ecologically"</code>
+    </div>
+    <div class="tip-card fade-up">
+      <span class="tip-icon">🔄</span>
+      <div class="tip-title">Iterate step by step</div>
+      <div class="tip-text">If a full prompt is overwhelming, break it into parts. Run Part 1 first, then continue with the next numbered section.</div>
+      <code class="tip-code">"Now implement only Part 2 of the previous prompt"</code>
+    </div>
+    <div class="tip-card fade-up">
+      <span class="tip-icon">💡</span>
+      <div class="tip-title">Ask for alternatives</div>
+      <div class="tip-text">If a library doesn't work, ask for an alternative approach. Gemini can often suggest a simpler method.</div>
+      <code class="tip-code">"Suggest a simpler alternative to rdkit for this task"</code>
+    </div>
+    <div class="tip-card fade-up">
+      <span class="tip-icon">📝</span>
+      <div class="tip-title">Request markdown notes</div>
+      <div class="tip-text">Ask Gemini to add markdown cells with theory explanations after each code block to create a self-documenting notebook.</div>
+      <code class="tip-code">"Add a markdown cell explaining the biology behind this"</code>
+    </div>
+  </div>
+</section>
+
+<!-- WORKSHOP INFO -->
+<div class="workshop-info" id="workshop">
+  <div>
+    <h2>From Theory to Simulation</h2>
+    <p>This handbook is part of a hands-on workshop designed for postgraduate students from non-IT backgrounds who want to harness Python and AI coding assistants for real research simulations in their own disciplines.</p>
+    <p>No programming background required — just curiosity and a Google account.</p>
+    <a href="#usecases" class="btn-secondary" style="border-color:white;color:white;">Start Exploring →</a>
+  </div>
+  <div class="workshop-details">
+    <div class="workshop-detail">
+      <span class="wd-icon">🏛️</span>
+      <div>
+        <div class="wd-label">University</div>
+        <div class="wd-value">MSCB University</div>
+      </div>
+    </div>
+    <div class="workshop-detail">
+      <span class="wd-icon">🎓</span>
+      <div>
+        <div class="wd-label">Target Audience</div>
+        <div class="wd-value">Postgraduate Students (Non-IT)</div>
+      </div>
+    </div>
+    <div class="workshop-detail">
+      <span class="wd-icon">🛠️</span>
+      <div>
+        <div class="wd-label">Tools Used</div>
+        <div class="wd-value">Python · Google Colab · Gemini AI · VS Code Copilot</div>
+      </div>
+    </div>
+    <div class="workshop-detail">
+      <span class="wd-icon">📚</span>
+      <div>
+        <div class="wd-label">Departments Covered</div>
+        <div class="wd-value">Mathematics, Physics, Chemistry, Biotechnology, Botany, Zoology, Economics, Business Admin, Remote Sensing & GIS</div>
+      </div>
+    </div>
+    <div class="workshop-detail">
+      <span class="wd-icon">⚡</span>
+      <div>
+        <div class="wd-label">Format</div>
+        <div class="wd-value">45 Guided Simulation Projects with AI-Generated Code</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESOURCE PERSON -->
+<section class="resource-section">
+  <span class="section-tag">Resource Person</span>
+  <h2 class="section-title">Workshop Facilitator</h2>
+  <div class="resource-card fade-up">
+    <div class="resource-avatar">RP</div>
+    <div>
+      <div class="resource-name">Resource Person</div>
+      <div class="resource-role">Workshop Facilitator · Python & AI Copilot Instructor</div>
+      <p class="resource-bio">
+        Conducting the workshop <em>"The Multidisciplinary Lab: A Python & AI Copilot Handbook for Advanced Scientific Simulation"</em> for MSCB University postgraduate students across 9 academic departments.
+        This workshop bridges the gap between domain expertise and computational tools — empowering scientists, economists, and geographers to run simulations and data analyses using AI-assisted coding, with no prior programming background required.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-title">The Multidisciplinary Lab</div>
+    <div class="footer-sub">
+      Python & AI Copilot Handbook for Advanced Scientific Simulation<br>
+      MSCB University · Postgraduate Workshop Resource
+    </div>
+  </div>
+  <div class="footer-right">
+    45 Projects · 9 Departments<br>
+    Google Colab + Gemini AI<br>
+    From Theory to Simulation
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true">
+  <div class="modal" id="modalContent">
+    <div class="modal-header">
+      <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+      <div class="modal-dept" id="mDept"></div>
+      <div class="modal-title" id="mTitle"></div>
+      <div class="modal-badges" id="mBadges"></div>
+    </div>
+    <div class="modal-body">
+      <div class="prompt-label">
+        <span>Gemini Colab Prompt</span>
+        <button class="copy-btn" id="copyBtn">📋 Copy Prompt</button>
+      </div>
+      <pre class="prompt-box" id="mPrompt"></pre>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const departments = [
+  { id:"all", name:"All Departments", color:"", bg:"" },
+  { id:"math", name:"Mathematics", emoji:"🧮", colorClass:"dept-math" },
+  { id:"physics", name:"Physics", emoji:"⚛️", colorClass:"dept-physics" },
+  { id:"chem", name:"Chemistry", emoji:"🧪", colorClass:"dept-chem" },
+  { id:"bio", name:"Biotechnology", emoji:"🧬", colorClass:"dept-bio" },
+  { id:"bot", name:"Botany", emoji:"🌿", colorClass:"dept-bot" },
+  { id:"zoo", name:"Zoology", emoji:"🐘", colorClass:"dept-zoo" },
+  { id:"econ", name:"Economics", emoji:"📈", colorClass:"dept-econ" },
+  { id:"biz", name:"Business Admin", emoji:"💼", colorClass:"dept-biz" },
+  { id:"gis", name:"Remote Sensing & GIS", emoji:"🌍", colorClass:"dept-gis" }
+];
+
+const cases = [
+  // MATHEMATICS
+  { dept:"math", title:"Prime Number Pattern Explorer", diff:"Beginner", dataset:"Generated via sympy/numpy", tools:"sympy, matplotlib, pandas",
+    desc:"Generate 5000 primes, compute gaps, identify twin primes, and visualize distribution patterns to verify conjectures numerically.",
+    prompt:`I am a postgraduate Mathematics student with basic Python knowledge.
+Help me build a complete end-to-end Google Colab notebook that:
+
+1. Installs all required libraries (sympy, matplotlib, pandas) using pip
+2. Generates a list of the first 5000 prime numbers using sympy.isprime()
+3. Computes prime gaps (difference between consecutive primes)
+4. Identifies twin primes (pairs differing by 2)
+5. Creates the following visualizations:
+   a) Histogram of prime gap sizes
+   b) Scatter plot: prime index vs. prime gap
+   c) Bar chart: count of twin primes vs. non-twin primes
+6. Prints summary statistics (mean gap, max gap, twin prime count)
+7. Adds markdown cells explaining each step in simple language
+
+Make sure all code cells run without errors in Google Colab.
+Use clear variable names and add comments explaining each line.`},
+
+  { dept:"math", title:"Probability Paradox Simulator", diff:"Beginner", dataset:"Simulated (random)", tools:"numpy, matplotlib, seaborn",
+    desc:"Simulate the Monty Hall Problem, Birthday Paradox, and Buffon's Needle with convergence plots to intuitive mathematical truths.",
+    prompt:`I am a postgraduate Mathematics student with basic Python knowledge.
+Help me build a complete end-to-end Google Colab notebook that simulates 3 famous probability paradoxes:
+
+PART 1 - Monty Hall Problem:
+- Simulate 10,000 trials for both "switch" and "stay" strategies
+- Plot win rates converging to theoretical values (2/3 and 1/3)
+
+PART 2 - Birthday Paradox:
+- For group sizes 1 to 80, simulate 5,000 trials each to estimate P(shared birthday)
+- Plot simulated probability vs. theoretical curve
+
+PART 3 - Buffon's Needle:
+- Simulate 50,000 needle drops (needle length = line spacing = 1)
+- Estimate pi from the crossing probability
+- Plot convergence of pi estimate vs. number of trials
+
+For each part:
+- Show the theoretical formula as a markdown cell with LaTeX
+- Print comparison: simulated value vs. theoretical value
+- Use seaborn for styled plots with proper titles and axis labels
+
+All code must run in Google Colab without manual file uploads.`},
+
+  { dept:"math", title:"Mathematical Constants Digit Analysis", diff:"Intermediate", dataset:"Generated via mpmath", tools:"mpmath, pandas, scipy, matplotlib",
+    desc:"Compute 10,000 digits of π and e, test digit uniformity with chi-square tests, and visualize digit frequency and autocorrelation.",
+    prompt:`I am a postgraduate Mathematics student with basic Python knowledge.
+Build me a complete Google Colab notebook for digit distribution analysis of pi and e:
+
+SETUP:
+- Install mpmath using pip
+- Compute 10,000 decimal digits of both pi and e using mpmath
+
+ANALYSIS FOR EACH CONSTANT:
+1. Extract individual digits as a list/array
+2. Count frequency of each digit (0-9) and plot a bar chart
+3. Run a chi-square goodness-of-fit test (scipy.stats.chisquare) to test
+   if digits are uniformly distributed; print the p-value and conclusion
+4. Compute and plot a running average of digit values vs. position
+5. Create an autocorrelation plot of the digit sequence
+
+COMPARISON SECTION:
+- Side-by-side bar charts comparing digit frequencies of pi vs. e
+- A heatmap of digit bigrams (which digit follows which) for pi
+
+Add markdown explanations for each analysis step.
+All outputs must be visible without any file uploads.`},
+
+  { dept:"math", title:"Interactive Fourier Series Visualizer", diff:"Intermediate", dataset:"Synthetic mathematical functions", tools:"numpy, matplotlib, plotly, ipywidgets",
+    desc:"Decompose square waves and sawtooth waves into Fourier components with animated reconstruction and real-time ipywidget sliders.",
+    prompt:`I am a postgraduate Mathematics student with basic Python knowledge.
+Build a complete interactive Google Colab notebook for Fourier series visualization:
+
+PART 1 - Square Wave Reconstruction:
+- Define a square wave analytically
+- Compute Fourier coefficients for N = 1, 3, 5, 10, 20, 50 terms
+- Plot each reconstruction overlaid on the true square wave
+
+PART 2 - Sawtooth Wave:
+- Same reconstruction approach with increasing terms
+- Show the Gibbs phenomenon clearly in the plot
+
+PART 3 - Custom Function:
+- Let the user input any function as a Python lambda (with a default)
+- Numerically estimate Fourier coefficients using numpy integration
+- Plot reconstruction with 1 to 20 terms in an animated matplotlib figure
+
+PART 4 - Interactive Widget:
+- Use ipywidgets (IntSlider) to let users adjust N terms in real-time
+- Slider should redraw the plot instantly showing reconstruction improvement
+
+Add markdown cells explaining what Fourier series represent and when they are used.
+All code must run in Google Colab.`},
+
+  { dept:"math", title:"Graph Theory on City Road Networks", diff:"Intermediate", dataset:"OpenStreetMap via osmnx", tools:"osmnx, networkx, matplotlib, geopandas",
+    desc:"Download a real city's road network, compute degree and betweenness centrality, find shortest paths, and visualize the graph.",
+    prompt:`I am a postgraduate Mathematics student with basic Python knowledge.
+Build a complete Google Colab notebook applying graph theory to a real city road network:
+
+SETUP:
+- Install osmnx, networkx, geopandas via pip
+- Download the road network for a mid-sized city (e.g., Bhubaneswar, India)
+  using osmnx.graph_from_place()
+
+ANALYSIS:
+1. Basic stats: number of nodes, edges, average degree, network density
+2. Degree distribution: plot histogram of node degrees
+3. Find and print: the 5 nodes with highest degree centrality
+4. Find and print: the 5 nodes with highest betweenness centrality
+5. Shortest path: pick 2 random nodes, find shortest path using
+   networkx.shortest_path(), plot it highlighted on the map
+6. Identify and plot the strongly connected components
+
+VISUALIZATION:
+- Draw the full network using osmnx.plot_graph()
+- Overlay centrality values as a heatmap on the network
+- Highlight the shortest path in red on a second plot
+
+Add markdown explanations for each graph theory concept.
+All code must run entirely in Google Colab.`},
+
+  // PHYSICS
+  { dept:"physics", title:"Interactive Projectile Motion Simulator", diff:"Beginner", dataset:"Simulated (physics equations)", tools:"numpy, matplotlib, ipywidgets",
+    desc:"Simulate trajectories across planets with different gravity, compare launch angles, and add real-time ipywidget sliders.",
+    prompt:`I am a postgraduate Physics student with basic Python knowledge.
+Build a complete interactive Google Colab notebook for projectile motion simulation:
+
+PHYSICS SETUP:
+- Use equations: x(t) = v0*cos(θ)*t, y(t) = v0*sin(θ)*t - 0.5*g*t^2
+- Parameters: initial velocity v0, launch angle θ, gravity g
+
+PART 1 - Single Trajectory:
+- Compute and plot a single projectile path with default parameters
+- Mark launch point, peak, and landing point
+- Print: max height, range, time of flight
+
+PART 2 - Multiple Angles:
+- Plot trajectories for angles 15°, 30°, 45°, 60°, 75° on one figure
+- Highlight the 45° case as giving maximum range
+
+PART 3 - Effect of Gravity:
+- Compare trajectories on Earth (9.81), Moon (1.62), Mars (3.72)
+
+PART 4 - Interactive Widget:
+- Use ipywidgets sliders for: angle (1°-89°), velocity (10-100 m/s), gravity (1.0-15.0 m/s²)
+- Redraw trajectory live as sliders change
+
+Add markdown cells with physics equations in LaTeX.
+All code must run in Google Colab without file uploads.`},
+
+  { dept:"physics", title:"Earthquake Seismic Wave Analysis", diff:"Intermediate", dataset:"USGS Earthquake Catalog (public)", tools:"obspy, pandas, matplotlib, scipy",
+    desc:"Download real seismogram data, apply bandpass filtering, compute spectrograms, and detect P/S wave arrivals using STA/LTA.",
+    prompt:`I am a postgraduate Physics student with basic Python knowledge.
+Build a complete Google Colab notebook for earthquake seismic data analysis:
+
+SETUP:
+- Install obspy via pip
+- Use the USGS FDSN web service via obspy.clients.fdsn.Client
+- Download 1 hour of seismic waveform data from a public station
+  around a known moderate earthquake (M4.5+) in the last 6 months
+
+DATA PROCESSING:
+1. Plot the raw seismogram (all 3 components: Z, N, E)
+2. Apply a bandpass filter (1-10 Hz) and plot the filtered signal
+3. Compute and plot the spectrogram for the Z component
+4. Compute the FFT (scipy.fft) and plot the frequency spectrum
+
+P/S WAVE PICKING:
+5. Apply STA/LTA algorithm (obspy.signal.trigger) to detect phase arrivals
+6. Mark detected P and S wave arrival times on the seismogram
+7. Estimate the epicentral distance using P-S travel time difference
+
+SUMMARY:
+8. Print a table: station name, earthquake magnitude, P arrival, S arrival, estimated distance
+
+Add markdown explanations of P and S waves and what each plot shows.`},
+
+  { dept:"physics", title:"NASA Global Temperature Trend Analysis", diff:"Beginner", dataset:"NASA GISS Surface Temperature (public)", tools:"pandas, matplotlib, statsmodels",
+    desc:"Download and analyze 140+ years of NASA GISS temperature anomaly data, compute linear trends, and forecast using Holt-Winters.",
+    prompt:`I am a postgraduate Physics student with basic Python knowledge.
+Build a complete end-to-end Google Colab notebook analysing global temperature trends:
+
+DATA ACQUISITION:
+- Download the NASA GISS global surface temperature anomaly CSV directly using:
+  pandas.read_csv('https://data.giss.nasa.gov/gistemp/tabledata_v4/GLB.Ts+dSST.csv')
+- Clean and reshape the data (skip header rows, handle *** missing values)
+
+ANALYSIS:
+1. Plot annual global temperature anomaly from 1880 to present
+2. Add a 10-year rolling mean as a smoothed trendline
+3. Compute and plot a linear regression trendline (numpy.polyfit)
+   and print: slope (°C per decade), R-squared value
+4. Decade-wise bar chart: average anomaly per decade
+5. Highlight the 10 hottest years in red on the time series
+6. Simple 5-year forecast using statsmodels Holt-Winters ExponentialSmoothing
+
+INTERPRETATION:
+7. Add markdown cells interpreting each finding in physical terms
+8. Print clear summary statistics: warmest year, coldest year, total warming
+
+All data loaded directly from URLs — no file upload needed.`},
+
+  { dept:"physics", title:"Stellar Spectral Analysis", diff:"Intermediate", dataset:"SDSS public archives", tools:"astroquery, astropy, scipy, matplotlib",
+    desc:"Download spectra of 3 star types from SDSS, detect absorption lines with scipy peak-finding, and classify by temperature.",
+    prompt:`I am a postgraduate Physics student with basic Python knowledge.
+Build a complete Google Colab notebook for stellar spectral analysis:
+
+DATA ACQUISITION:
+- Install astroquery and astropy via pip
+- Use astroquery.sdss to download spectra of 3 different star types:
+  a main sequence star (type G), a hot blue star (type B), a red giant (type K)
+
+VISUALIZATION:
+1. Plot the raw spectrum (flux vs. wavelength in Angstroms) for each star
+2. Normalize each spectrum to its median flux
+
+ABSORPTION LINE IDENTIFICATION:
+3. Apply scipy.signal.find_peaks() with an inverted flux to detect absorption dips
+4. Match detected wavelengths (within ±5 Å) to known lines:
+   H-alpha (6563Å), H-beta (4861Å), NaI doublet (5890/5896Å), CaII K (3934Å)
+5. Mark identified lines on the spectrum plot with vertical dashed lines and labels
+
+COMPARISON:
+6. Overlay normalized spectra of all 3 star types on one figure
+7. Print a table: star type, detected lines, estimated temperature from color index
+
+Add markdown cells explaining stellar classification and what each line indicates.`},
+
+  { dept:"physics", title:"Double Pendulum Chaos Simulation", diff:"Intermediate", dataset:"Simulated (ODEs)", tools:"numpy, scipy, matplotlib",
+    desc:"Solve the 4-ODE double pendulum system, visualize butterfly-effect trajectory divergence, verify energy conservation, and animate.",
+    prompt:`I am a postgraduate Physics student with basic Python knowledge.
+Build a complete Google Colab notebook comparing single and double pendulum dynamics:
+
+PART 1 - Single Pendulum:
+- Solve the nonlinear ODE using scipy.integrate.solve_ivp
+- Simulate for angles: 5°, 30°, 60°, 89°
+- Plot angle vs. time for all four on one figure
+- Plot phase portrait (angle vs. angular velocity) for each
+
+PART 2 - Double Pendulum (Chaotic System):
+- Derive and implement the 4-ODE system for double pendulum
+- Simulate two trajectories with initial conditions differing by 0.001°
+- Plot both trajectories and show they diverge rapidly
+- Compute the time at which the two trajectories separate beyond 10°
+
+PART 3 - Energy Analysis:
+- For the double pendulum, compute total energy at each timestep
+- Plot energy vs. time to verify conservation (within numerical error)
+
+PART 4 - Animation:
+- Create a matplotlib animation of the double pendulum motion
+- Display it in the notebook using HTML(anim.to_jshtml())
+
+Add markdown cells explaining deterministic chaos and sensitivity to initial conditions.`},
+
+  // CHEMISTRY
+  { dept:"chem", title:"Interactive Periodic Table Explorer", diff:"Beginner", dataset:"PubChem / GitHub CSV (public)", tools:"pandas, plotly, requests",
+    desc:"Load all 118 elements, build interactive scatter plots, a table-layout heatmap, and a property search function.",
+    prompt:`I am a postgraduate Chemistry student with basic Python knowledge.
+Build a complete interactive Google Colab notebook for periodic table data exploration:
+
+DATA ACQUISITION:
+- Load the periodic table dataset from this URL:
+  https://raw.githubusercontent.com/andrejewski/periodic-table/master/data.csv
+- Display the first 5 rows and the column names
+
+VISUALIZATIONS (all using plotly for interactivity):
+1. Interactive scatter plot: atomic number vs. atomic mass (color by element category)
+2. Bar chart: top 20 elements by first ionization energy
+3. Heatmap: periodic table layout showing electronegativity values as color
+   (rows = periods, columns = groups, hover shows element name and value)
+4. Bubble chart: atomic radius vs. electronegativity, bubble size = atomic mass
+
+STATISTICAL ANALYSIS:
+5. Correlation matrix heatmap of all numeric properties
+6. Box plots comparing properties (atomic radius, ionization energy) by element category
+
+SEARCH FUNCTIONALITY:
+7. Write a function that accepts an element name or symbol as input
+   and prints a formatted summary of all its properties
+
+No file uploads needed — all data from URL.`},
+
+  { dept:"chem", title:"Reaction Kinetics Curve Fitting", diff:"Intermediate", dataset:"Hypothetical lab data (generated)", tools:"numpy, scipy, matplotlib, pandas",
+    desc:"Generate noisy zero-, first-, and second-order kinetics data, fit all three models, compute R², and derive half-lives automatically.",
+    prompt:`I am a postgraduate Chemistry student with basic Python knowledge.
+Build a complete Google Colab notebook for reaction kinetics analysis:
+
+SYNTHETIC DATA GENERATION:
+- Generate hypothetical concentration vs. time data for:
+  a) Zero-order: [A] = [A]0 - k*t  (add gaussian noise)
+  b) First-order: [A] = [A]0 * exp(-k*t)  (add gaussian noise)
+  c) Second-order: 1/[A] = 1/[A]0 + k*t  (add gaussian noise)
+- Use numpy.random.normal() to add realistic experimental noise
+
+CURVE FITTING:
+1. Use scipy.optimize.curve_fit to fit each dataset to all 3 models
+2. Print fitted k (rate constant) and [A]0 with uncertainties (from pcov)
+3. Compute R² for each fit
+4. Plot: raw data as scatter + all 3 fitted curves for comparison
+
+LINEAR PLOTS (traditional method):
+5. Plot [A] vs. t, ln[A] vs. t, and 1/[A] vs. t on a 3x1 subplot
+6. The linear plot identifies the correct reaction order
+
+HALF-LIFE CALCULATION:
+7. Compute and print half-life from the best-fit rate constant for each order
+
+Add markdown cells explaining the integrated rate laws in LaTeX.`},
+
+  { dept:"chem", title:"Air Quality Trend Analysis", diff:"Beginner", dataset:"OpenAQ public API (no key needed)", tools:"requests, pandas, seaborn, matplotlib",
+    desc:"Fetch live PM2.5 and NO₂ data from OpenAQ, build hourly heatmaps, flag WHO threshold violations, and compute exceedance statistics.",
+    prompt:`I am a postgraduate Chemistry student with basic Python knowledge.
+Build a complete Google Colab notebook for air quality analysis using the OpenAQ API:
+
+DATA ACQUISITION:
+- Use the OpenAQ API (no key needed): https://api.openaq.org/v2/
+- Fetch PM2.5 and NO2 measurements for a major Indian city (e.g., Delhi)
+  for the last 30 days using requests and the /measurements endpoint
+- Parse the JSON response into a pandas DataFrame
+- Handle missing/null values appropriately
+
+ANALYSIS:
+1. Plot daily average PM2.5 and NO2 over the time period
+2. Plot hourly average (hour of day) for each pollutant — identify peak pollution hours
+3. Heatmap: day-of-week vs. hour-of-day average PM2.5
+4. Compare measurements to WHO guidelines (PM2.5: 15 µg/m³, NO2: 25 µg/m³)
+   and highlight days above the threshold in red
+5. Compute and print: % of days exceeding WHO limits, max value, min value
+
+Add markdown cells explaining PM2.5, NO2, their health effects, and WHO limits.
+All data fetched live from the API — no file upload needed.`},
+
+  { dept:"chem", title:"Molecular Descriptor Clustering", diff:"Intermediate", dataset:"ChEMBL / PubChem bioactivity data", tools:"rdkit, pandas, sklearn, matplotlib, seaborn",
+    desc:"Compute MW, LogP, TPSA for drug molecules, apply PCA and KMeans clustering, and filter using Lipinski's Rule of Five.",
+    prompt:`I am a postgraduate Chemistry student with basic Python knowledge.
+Build a complete Google Colab notebook for molecular clustering based on descriptors:
+
+SETUP:
+- Install rdkit-pypi via pip
+- Use a built-in toy dataset from rdkit or download a set of drug-like molecules as SMILES
+
+DESCRIPTOR CALCULATION:
+1. For each molecule, calculate with rdkit:
+   Molecular Weight, LogP (lipophilicity), TPSA (polar surface area),
+   HBD (H-bond donors), HBA (H-bond acceptors), Rotatable Bonds
+2. Show the descriptor DataFrame
+
+ANALYSIS:
+3. Plot pairwise scatter matrix (seaborn.pairplot) colored by a class label
+4. Standardize descriptors and apply PCA (2 components) — plot the 2D PCA space
+5. Apply KMeans clustering (k=3, 4, 5) and use the elbow method to select best k
+6. Plot final clusters in PCA space with centroids marked
+7. Apply Lipinski's Rule of Five filter and show how many molecules pass
+
+INTERPRETATION:
+8. Print representative SMILES from each cluster
+9. Add markdown explaining what each descriptor means chemically`},
+
+  { dept:"chem", title:"Water Quality Parameter Dashboard", diff:"Beginner", dataset:"WHO limits + synthetic samples", tools:"pandas, plotly, numpy",
+    desc:"Generate 200 synthetic water samples, flag WHO limit violations for pH, turbidity, arsenic and more, and build an interactive dashboard.",
+    prompt:`I am a postgraduate Chemistry student with basic Python knowledge.
+Build a complete Google Colab notebook for water quality monitoring:
+
+SYNTHETIC DATA GENERATION:
+- Generate a synthetic dataset of 200 water samples with:
+  pH (6.0-9.5), Turbidity (NTU), TDS (mg/L), DO (dissolved oxygen mg/L),
+  Nitrate (mg/L), Fluoride (mg/L), Arsenic (µg/L), Coliform (MPN/100mL)
+- Use numpy.random to generate realistic value ranges based on WHO limits
+
+ANOMALY DETECTION:
+1. For each parameter, define WHO safe limit thresholds
+2. Create a new column flagging each sample as "Safe" or "Unsafe"
+3. Count and print how many samples exceed each limit
+
+VISUALIZATIONS:
+4. Box plots for all parameters showing WHO threshold as a horizontal line
+5. Scatter plot: pH vs. TDS (colored by safe/unsafe)
+6. Heatmap: correlation matrix of all chemical parameters
+7. Bar chart: count of unsafe samples per location
+8. Pie chart: proportion of samples safe vs. unsafe overall
+
+Add markdown cells explaining each parameter's health significance.`},
+
+  // BIOTECHNOLOGY
+  { dept:"bio", title:"DNA Sequence Analysis Pipeline", diff:"Beginner", dataset:"NCBI GenBank — E. coli K-12", tools:"Biopython, matplotlib, pandas",
+    desc:"Download and analyze a bacterial genome: compute GC content, sliding-window GC plots, codon usage, and detect open reading frames.",
+    prompt:`I am a postgraduate Biotechnology student with basic Python knowledge.
+Build a complete Google Colab notebook for DNA sequence analysis:
+
+SETUP:
+- Install Biopython via pip
+- Download the E. coli K-12 genome using Biopython Entrez (accession NC_000913)
+
+BASIC ANALYSIS:
+1. Print: sequence length, description, organism
+2. Compute: GC content (%), AT content (%)
+3. Count each nucleotide (A, T, G, C) and plot a bar chart
+4. Compute GC content in a sliding window (window=1000 bp, step=500 bp)
+   and plot GC% vs. genomic position
+
+CODON USAGE:
+5. Extract all codons from the + strand
+6. Count frequency of each of the 64 codons
+7. Bar chart of top 20 most frequent codons
+
+OPEN READING FRAMES:
+8. Find all ORFs (start: ATG, stop: TAA/TAG/TGA) in all 6 frames
+9. Plot histogram of ORF lengths
+10. Print the 5 longest ORFs (start pos, stop pos, length, sequence)
+
+Add markdown explanations for GC content significance and what ORFs represent.`},
+
+  { dept:"bio", title:"Gene Expression Heatmap & Volcano Plot", diff:"Intermediate", dataset:"GEO (NCBI Gene Expression Omnibus)", tools:"pandas, seaborn, matplotlib, scipy",
+    desc:"Analyze RNA-seq differential expression data, run t-tests, apply Bonferroni correction, and generate volcano plots and clustered heatmaps.",
+    prompt:`I am a postgraduate Biotechnology student with basic Python knowledge.
+Build a complete Google Colab notebook for RNA-seq differential expression analysis:
+
+DATA ACQUISITION:
+- Download a processed RNA-seq expression matrix (CSV/TSV) from GEO
+  Use dataset GSE183947 (breast cancer vs. normal) or similar
+  Load directly using pandas.read_csv() with the GEO URL
+
+DATA PREPROCESSING:
+1. Handle missing values, log2-transform the count matrix (log2(x+1))
+2. Show a box plot before and after normalization to verify
+
+DIFFERENTIAL EXPRESSION:
+3. Split samples into two groups (e.g., tumor vs. normal)
+4. For each gene, run a t-test (scipy.stats.ttest_ind) comparing groups
+5. Compute fold change (mean group1 / mean group2)
+6. Adjust p-values using Bonferroni correction
+7. Create a results DataFrame: gene, fold_change, p_value, adj_p_value, significant
+
+VISUALIZATIONS:
+8. Volcano plot: fold change (x) vs. -log10(p-value) (y),
+   color significant genes red, label top 10
+9. Heatmap of top 50 differentially expressed genes using seaborn.clustermap
+10. MA plot: average expression vs. fold change
+
+Print: total significant genes, top 10 upregulated, top 10 downregulated.`},
+
+  { dept:"bio", title:"Protein Phylogenetic Tree Builder", diff:"Intermediate", dataset:"UniProt protein sequences (public)", tools:"Biopython, matplotlib, requests",
+    desc:"Download cytochrome c sequences from 10 species via UniProt, perform pairwise alignments, compute identity matrices, and build an NJ tree.",
+    prompt:`I am a postgraduate Biotechnology student with basic Python knowledge.
+Build a complete Google Colab notebook for protein sequence comparison and phylogenetics:
+
+DATA ACQUISITION:
+- Install Biopython via pip
+- Download cytochrome c protein sequences from 8-10 species using the UniProt API
+  Use species like human, mouse, zebrafish, yeast, E. coli, chicken, frog, fly
+
+PAIRWISE ALIGNMENT:
+1. Perform pairwise alignment for all pairs using Bio.pairwise2.align.globalxx
+2. Compute percent identity for each pair
+3. Create and display a percent identity matrix as a heatmap
+
+MULTIPLE SEQUENCE ALIGNMENT:
+4. Write sequences to a temp FASTA file
+5. Run alignment using Bio.Align.MultipleSeqAlignment
+6. Identify conserved positions (columns with >80% same residue)
+
+PHYLOGENETIC TREE:
+7. Compute distance matrix from the alignment
+8. Build Neighbour-Joining tree using Bio.Phylo.TreeConstruction
+9. Draw and display the tree using Bio.Phylo.draw_ascii() and matplotlib
+
+Add markdown explaining what protein conservation tells us about evolution.`},
+
+  { dept:"bio", title:"CRISPR Off-Target Site Predictor", diff:"Intermediate", dataset:"NCBI genome sequences", tools:"Biopython, pandas, matplotlib",
+    desc:"Scan a genome for gRNA matches with up to 3 mismatches, score each off-target site by mismatch position, and visualize risk.",
+    prompt:`I am a postgraduate Biotechnology student with basic Python knowledge.
+Build a complete Google Colab notebook for CRISPR guide RNA off-target analysis:
+
+SETUP:
+- Define a 20-nt gRNA sequence (use a published gRNA targeting BRCA1)
+- Download a 100kb segment of human chromosome 17 from NCBI using Biopython Entrez
+
+ON-TARGET IDENTIFICATION:
+1. Search for exact gRNA match + PAM sequence (NGG) in both strands
+2. Print on-target site position
+
+OFF-TARGET SCANNING:
+3. Write a function that scans the genome segment and finds all positions
+   where the gRNA matches with 1, 2, or 3 mismatches (PAM = NGG only)
+4. For each hit, compute: position, strand, number of mismatches, mismatch positions
+5. Score each site (mismatches near PAM penalized more heavily)
+
+RESULTS:
+6. Create a DataFrame of all off-target hits sorted by score
+7. Bar chart: number of off-target sites by mismatch count (1, 2, 3)
+8. Dot plot: off-target score vs. position in genome
+9. Print the top 5 highest-risk off-target sites
+
+Add markdown explaining CRISPR safety and why off-target analysis matters.`},
+
+  { dept:"bio", title:"Antibiotic Resistance Trend Analysis", diff:"Beginner", dataset:"WHO GLASS AMR database (public)", tools:"pandas, plotly, seaborn, requests",
+    desc:"Analyze WHO AMR data for E. coli, K. pneumoniae, and S. aureus, visualize resistance trends, and build a country-level choropleth map.",
+    prompt:`I am a postgraduate Biotechnology student with basic Python knowledge.
+Build a complete Google Colab notebook for antibiotic resistance trend analysis:
+
+DATA ACQUISITION:
+- Download the WHO GLASS AMR data or use a synthetic dataset with:
+  country, year (2015-2022), pathogen, antibiotic, percent_resistant
+
+ANALYSIS:
+1. Filter for 3 key pathogens: E. coli, K. pneumoniae, S. aureus
+2. Filter for 3 key antibiotics: ciprofloxacin, ampicillin, methicillin
+3. Line plots: resistance trend over years for each pathogen-antibiotic pair
+4. Grouped bar chart: compare resistance rates across countries for latest year
+5. Heatmap: pathogen vs. antibiotic resistance % (averaged globally)
+6. Choropleth map using plotly.express.choropleth:
+   country-level resistance rate for one pathogen-antibiotic pair
+
+STATISTICS:
+7. For each pathogen-antibiotic, compute linear trend slope (% per year)
+8. Print: fastest-increasing resistance combinations
+
+Add markdown explaining AMR, how resistance arises, and its global impact.`},
+
+  // BOTANY
+  { dept:"bot", title:"Plant Biodiversity Mapping (GBIF)", diff:"Beginner", dataset:"GBIF API (no key needed)", tools:"requests, pandas, geopandas, folium, matplotlib",
+    desc:"Fetch 300 plant occurrence records from India via GBIF API, compute Shannon and Simpson diversity indices, and build an interactive Folium map.",
+    prompt:`I am a postgraduate Botany student with basic Python knowledge.
+Build a complete Google Colab notebook for plant biodiversity mapping:
+
+DATA ACQUISITION:
+- Install geopandas, folium via pip
+- Use the GBIF API (no key needed):
+  https://api.gbif.org/v1/occurrence/search?country=IN&kingdom=Plantae&limit=300
+- Parse JSON into a pandas DataFrame with: species, latitude, longitude, state
+
+DIVERSITY INDICES:
+1. Count species occurrences per state/region
+2. Compute Shannon Diversity Index: H = -Σ(pi * ln(pi)) for each region
+3. Compute Simpson's Index for each region
+4. Bar chart: top 10 most species-rich states
+5. Bar chart: Shannon index per state
+
+MAPPING:
+6. Create a folium map centered on India
+7. Add circle markers for each occurrence (size = count, color by species)
+8. Add a choropleth layer: color states by species count
+9. Display the map in Colab using IPython.display
+
+ANALYSIS:
+10. Print top 10 most recorded species
+11. Scatter plot: latitude vs. number of species (latitudinal diversity gradient)
+
+Add markdown explaining biodiversity indices and what they measure.`},
+
+  { dept:"bot", title:"Phenology and Climate Correlation", diff:"Intermediate", dataset:"iNaturalist API + synthetic climate data", tools:"pandas, scipy, matplotlib, requests",
+    desc:"Correlate plant flowering seasonality from iNaturalist with temperature and rainfall, test Pearson correlation, and detect phenological shift.",
+    prompt:`I am a postgraduate Botany student with basic Python knowledge.
+Build a complete Google Colab notebook correlating plant phenology with climate variables:
+
+DATA ACQUISITION:
+- Use the iNaturalist API to fetch flowering observations for Cassia fistula in India:
+  https://api.inaturalist.org/v1/observations?taxon_name=Cassia+fistula&place_id=6686&per_page=200
+- Aggregate: count observations per month across years
+
+- Generate a synthetic monthly temperature and rainfall dataset (2015-2023)
+
+ANALYSIS:
+1. Plot: monthly flowering observation count vs. month
+2. Overlay monthly mean temperature (twin y-axis)
+3. Overlay monthly rainfall on a separate panel
+4. Compute Pearson correlation (scipy.stats.pearsonr) between:
+   a) flowering count and temperature
+   b) flowering count and rainfall (1-month lag)
+5. Scatter plots for both correlations with regression line
+6. Year-over-year comparison: has peak flowering month shifted?
+
+CLIMATE SHIFT ANALYSIS:
+7. Compute rolling 3-year average of peak flowering month
+8. Test for significant linear trend using scipy.stats.linregress
+
+Add markdown explaining phenology, climate-plant interactions, and your results.`},
+
+  { dept:"bot", title:"Plant Leaf Image Classifier (CNN)", diff:"Intermediate", dataset:"PlantVillage (TensorFlow Datasets)", tools:"TensorFlow, Keras, matplotlib, sklearn",
+    desc:"Load PlantVillage via tf.datasets, apply MobileNetV2 transfer learning, train a 5-class classifier, and evaluate with confusion matrix.",
+    prompt:`I am a postgraduate Botany student with basic Python knowledge.
+Build a complete Google Colab notebook for plant leaf image classification using deep learning:
+
+SETUP:
+- Enable GPU runtime in Colab (Runtime > Change Runtime Type > GPU)
+- Install tensorflow-datasets via pip
+- Load the PlantVillage dataset from tensorflow_datasets
+- Use a subset: 5 plant classes, 200 images per class
+
+DATA PREPARATION:
+1. Display a 5x5 grid of sample images from each class
+2. Resize all images to 128x128, normalize pixel values to [0,1]
+3. Split into 80% train, 10% validation, 10% test
+4. Apply data augmentation: random flip, rotation, brightness
+
+MODEL:
+5. Use transfer learning: load MobileNetV2 (imagenet weights, top=False)
+6. Add GlobalAveragePooling2D + Dense(128, relu) + Dropout(0.3) + Dense(5, softmax)
+7. Compile with Adam optimizer, categorical_crossentropy
+8. Train for 10 epochs, plot training/validation accuracy and loss curves
+
+EVALUATION:
+9. Print test accuracy and classification report
+10. Display a confusion matrix heatmap
+11. Show 9 test images with predicted vs. true label
+
+Add markdown explaining CNN, transfer learning, and what each layer does.`},
+
+  { dept:"bot", title:"Forest Cover Change via NDVI", diff:"Intermediate", dataset:"Landsat / MODIS satellite imagery", tools:"rasterio, numpy, matplotlib, requests",
+    desc:"Compute NDVI from Landsat bands for two years, produce a vegetation change map, and quantify forest gain/loss in km².",
+    prompt:`I am a postgraduate Botany student with basic Python knowledge.
+Build a complete Google Colab notebook for forest cover change detection using NDVI:
+
+SETUP:
+- Install rasterio via pip
+- Download two Landsat 8 surface reflectance images (Band 4 = Red, Band 5 = NIR)
+  for two time points (e.g., 2015 and 2023) for a region in Odisha or Northeast India
+  (Use pre-staged GeoTIFF files from a public GitHub URL if needed)
+
+NDVI COMPUTATION:
+1. Load Red and NIR bands using rasterio for both years
+2. Compute NDVI = (NIR - Red) / (NIR + Red) for both years
+3. Handle divide-by-zero and clip NDVI to [-1, 1]
+
+VISUALIZATION:
+4. Plot side-by-side NDVI maps for year 1 and year 2 (use RdYlGn colormap)
+5. Compute the NDVI difference map (year2 - year1)
+6. Plot the difference map:
+   - Green: vegetation gain (ΔNDVI > 0.1)
+   - Red: vegetation loss (ΔNDVI < -0.1)
+
+STATISTICS:
+7. Classify each pixel: forest (NDVI>0.4), grassland (0.2-0.4), bare/urban (<0.2)
+8. Create a 2x2 change matrix
+9. Print: % of forest lost, % of bare land gained, net change in hectares
+
+Add markdown explaining NDVI and deforestation remote sensing.`},
+
+  { dept:"bot", title:"Medicinal Plant Network Analysis", diff:"Beginner", dataset:"IMPPAT database / curated CSV", tools:"pandas, networkx, matplotlib, plotly",
+    desc:"Analyze Indian medicinal plants database, build a bipartite compound-plant network, compute centrality, and generate word clouds.",
+    prompt:`I am a postgraduate Botany student with basic Python knowledge.
+Build a complete Google Colab notebook for medicinal plant data analysis:
+
+DATA ACQUISITION:
+- Download the IMPPAT dataset from: https://cb.imsc.res.in/imppat/
+  Or use a public GitHub mirror of the phytochemical activity data
+  If unavailable, generate synthetic data: 100 plants × columns:
+  plant_name, family, compound, therapeutic_use, activity_type, state
+
+EXPLORATORY ANALYSIS:
+1. Top 15 most studied plant families — bar chart
+2. Top 20 most common therapeutic uses — horizontal bar chart
+3. Top 20 most frequently occurring phytochemicals — bar chart
+4. Plants per Indian state — bar chart
+5. Word cloud of therapeutic uses (install wordcloud via pip)
+
+NETWORK ANALYSIS:
+6. Build a bipartite graph: plant nodes ↔ compound nodes using networkx
+   (limit to plants with >5 compounds)
+7. Compute degree centrality for compound nodes
+8. Visualize the network using networkx.draw_spring()
+9. Print top 10 most therapeutically versatile compounds
+
+SEARCH FUNCTION:
+10. Write a function: search_plant("turmeric") → prints all compounds and uses
+
+Add markdown on Ayurveda, phytochemistry, and network analysis significance.`},
+
+  // ZOOLOGY
+  { dept:"zoo", title:"Animal Migration Pattern Analysis", diff:"Beginner", dataset:"Movebank animal tracking (public)", tools:"pandas, geopandas, folium, matplotlib",
+    desc:"Download white stork GPS tracking data, compute Haversine distances, detect stopovers, and build an interactive migration map.",
+    prompt:`I am a postgraduate Zoology student with basic Python knowledge.
+Build a complete Google Colab notebook for animal migration pattern analysis:
+
+DATA ACQUISITION:
+- Install geopandas, folium via pip
+- Download a GPS tracking dataset from Movebank (white stork dataset)
+  Movebank Study ID 76367850 — "LifeTrack White Stork Hungary"
+  Load CSV with pandas — columns: timestamp, location-long, location-lat, individual-id
+
+INDIVIDUAL ANALYSIS:
+1. Select 3 individual birds, plot their complete tracks on a world map (folium)
+2. Compute total distance travelled per individual using the Haversine formula
+3. Compute average daily displacement (km/day)
+
+POPULATION-LEVEL ANALYSIS:
+4. Plot all tracks together on a folium map (different colors per individual)
+5. Monthly movement: plot monthly centroid positions for each individual
+6. Bar chart: monthly distance travelled (shows migration timing)
+
+STOPOVER DETECTION:
+7. Identify stopovers: days where displacement < 20 km for 3+ consecutive days
+8. Mark stopover locations as special markers on the map
+9. Print a table: individual ID, stopover location, duration
+
+Add markdown on bird migration, telemetry data, and conservation implications.`},
+
+  { dept:"zoo", title:"Species Distribution Modelling", diff:"Intermediate", dataset:"GBIF occurrences + WorldClim bioclimatic data", tools:"requests, pandas, rasterio, sklearn, matplotlib",
+    desc:"Model Bengal Tiger habitat suitability using Random Forest on climate variables, generate a suitability prediction map, and plot ROC curve.",
+    prompt:`I am a postgraduate Zoology student with basic Python knowledge.
+Build a complete Google Colab notebook for species distribution modelling (MaxEnt-style):
+
+DATA ACQUISITION:
+- Install rasterio, geopandas via pip
+- Download occurrence records for a target species (e.g., Bengal Tiger)
+  from GBIF API: https://api.gbif.org/v1/occurrence/search?limit=200
+- Download 4 WorldClim bioclimatic variables as GeoTIFF from a public URL
+
+FEATURE EXTRACTION:
+1. Extract bioclimatic values at each species occurrence point using rasterio
+2. Generate random background/pseudo-absence points (5x occurrences)
+3. Build a DataFrame: presence (1) or background (0) + 4 bioclimatic values
+
+MODEL TRAINING:
+4. Split 80/20 train/test
+5. Train a Random Forest classifier (sklearn)
+6. Print: AUC score, classification report
+7. Plot ROC curve
+
+PREDICTION MAP:
+8. Predict habitat suitability for all grid cells in the study area
+9. Plot the suitability map (green color ramp)
+10. Overlay occurrence points on the prediction map
+
+VARIABLE IMPORTANCE:
+11. Plot bar chart of feature importances
+12. Add markdown explaining which climate variable drives the distribution most`},
+
+  { dept:"zoo", title:"Wildlife Camera Trap Classifier", diff:"Intermediate", dataset:"Snapshot Serengeti / Lila.science", tools:"TensorFlow, Keras, matplotlib, sklearn",
+    desc:"Train an EfficientNetB0 transfer learning classifier on camera trap images with two fine-tuning phases, and evaluate with confidence scores.",
+    prompt:`I am a postgraduate Zoology student with basic Python knowledge.
+Build a complete Google Colab notebook for wildlife camera trap animal detection:
+
+SETUP:
+- Enable GPU in Colab
+- Load a curated subset from Snapshot Serengeti (Lila.science download URL)
+  Or download 5 animal classes (50 images each) from public sources
+
+DATA PREP:
+1. Display a grid of sample images per class (5 per class)
+2. Resize to 224x224, normalize, apply augmentation (flip, zoom, brightness)
+3. 80/10/10 split — show class distribution bar chart
+
+MODEL:
+4. Load EfficientNetB0 (imagenet weights, include_top=False)
+5. Add: GlobalAveragePooling2D → Dense(256, relu) → Dropout(0.4) → Dense(n_classes, softmax)
+6. Fine-tune: first freeze base, train 5 epochs; then unfreeze last 20 layers, train 5 more
+7. Plot accuracy and loss curves for both phases
+
+EVALUATION:
+8. Test accuracy, precision, recall per class
+9. Confusion matrix heatmap
+10. Display 12 test predictions: image + true label + predicted label + confidence %
+
+BONUS:
+11. Write a function predict_image(img_path) for a single uploaded image
+
+Add markdown on camera trap ecology and AI in wildlife monitoring.`},
+
+  { dept:"zoo", title:"Lotka-Volterra Predator-Prey Simulation", diff:"Beginner", dataset:"Simulated (ODEs) + Hudson Bay lynx-hare data", tools:"numpy, scipy, matplotlib, ipywidgets",
+    desc:"Simulate Lotka-Volterra dynamics with carrying capacity extension, add real-time sliders for all parameters, and compare with historical data.",
+    prompt:`I am a postgraduate Zoology student with basic Python knowledge.
+Build a complete interactive Google Colab notebook for predator-prey population dynamics:
+
+PART 1 - Basic Lotka-Volterra:
+- Define the 2-ODE system:
+  dPrey/dt = α*Prey - β*Prey*Predator
+  dPredator/dt = δ*Prey*Predator - γ*Predator
+- Solve using scipy.integrate.solve_ivp with default parameters
+- Plot: population vs. time for both species (dual y-axis)
+- Plot: phase portrait (prey vs. predator) showing limit cycle
+
+PART 2 - Parameter Exploration:
+- Run simulations for 3 different α (prey growth) values
+- Run with a high initial predator count — show extinction risk
+
+PART 3 - Extended Model (Carrying Capacity):
+- Add logistic growth for prey: dPrey/dt = α*Prey*(1-Prey/K) - β*Prey*Predator
+- Compare with and without carrying capacity
+
+PART 4 - Interactive Widget:
+- Use ipywidgets sliders for: α, β, γ, δ, initial prey, initial predators
+- Redraw both plots in real-time as sliders are adjusted
+
+PART 5 - Real Data Comparison:
+- Overlay simulated results with the classic Canadian lynx-hare data
+
+Add markdown explaining the Lotka-Volterra model and its ecological assumptions.`},
+
+  { dept:"zoo", title:"Coral Reef Health Index Dashboard", diff:"Beginner", dataset:"Reef Check survey data / synthetic", tools:"pandas, plotly, matplotlib, numpy",
+    desc:"Generate synthetic benthic survey data, compute a composite Reef Health Index, detect rapid degradation, and build an interactive Plotly map.",
+    prompt:`I am a postgraduate Zoology student with basic Python knowledge.
+Build a complete Google Colab notebook for a coral reef health monitoring dashboard:
+
+SYNTHETIC DATA GENERATION:
+- Generate a dataset of 50 reef survey sites across 5 regions (Indian Ocean, Pacific, etc.)
+- Columns: site_id, region, year (2015-2023), coral_cover_%, fish_biomass_kg_ha,
+  algae_cover_%, bleaching_%, water_temp_C, pH, turbidity_NTU
+- Add a degradation trend over years
+
+REEF HEALTH INDEX:
+1. Define composite Reef Health Index (RHI):
+   RHI = (coral_cover/50)*30 + (fish_biomass/200)*25 + (1-bleaching/100)*25 + (1-algae/40)*20
+2. Classify: Excellent >70, Good 50-70, Fair 30-50, Poor <30
+
+VISUALIZATIONS:
+3. Bar chart: mean RHI by region
+4. Line chart: RHI trend over years per region
+5. Scatter plot: water temperature vs. coral cover (colored by bleaching %)
+6. Heatmap: all parameters by site
+7. Plotly interactive map: plot reef sites on a world map, size=RHI, color=category
+
+ALERTS:
+8. Print sites where RHI dropped >10 points in 2 years
+9. Print sites with bleaching% > 40% in latest year
+
+Add markdown on coral reef ecology, bleaching, and composite indices.`},
+
+  // ECONOMICS
+  { dept:"econ", title:"Inflation and Purchasing Power Tracker", diff:"Beginner", dataset:"World Bank CPI API (no key needed)", tools:"pandas, plotly, requests, numpy",
+    desc:"Fetch 40 years of India CPI from World Bank API, animate purchasing power erosion, compare with USA and China, and forecast 5 years with ARIMA.",
+    prompt:`I am a postgraduate Economics student with basic Python knowledge.
+Build a complete Google Colab notebook for inflation and purchasing power analysis:
+
+DATA ACQUISITION:
+- Use the World Bank API to fetch India's CPI data (1980-2023):
+  http://api.worldbank.org/v2/country/IN/indicator/FP.CPI.TOTL?format=json&per_page=100
+- Also fetch for USA and China for comparison
+
+ANALYSIS:
+1. Line chart: CPI over time for India, USA, China (log scale option)
+2. Compute year-on-year inflation rate: (CPI_t - CPI_t-1) / CPI_t-1 * 100
+3. Bar chart: inflation rate per year for India (highlight crisis years in red)
+4. Purchasing power: if ₹1000 in 1990, what is it worth in 2023?
+   Compute real value each year and plot using plotly
+
+SECTORAL INFLATION (Synthetic):
+5. Generate synthetic CPI sub-indices for: food, fuel, healthcare, education
+6. Plot: stacked area chart of contribution to headline inflation by sector
+
+FORECASTING:
+7. Fit an ARIMA(1,1,1) model to India CPI using statsmodels
+8. Forecast next 5 years with confidence intervals
+9. Plot: historical + forecast + confidence band
+
+Add markdown explaining CPI, inflation calculation, and real vs. nominal values.`},
+
+  { dept:"econ", title:"Agri-Commodity Price Forecasting", diff:"Intermediate", dataset:"Agmarknet / FAO public data", tools:"pandas, Prophet, statsmodels, plotly",
+    desc:"Download mandi price data for rice and wheat, run seasonal decomposition, add Indian festival regressors, and forecast with Facebook Prophet.",
+    prompt:`I am a postgraduate Economics student with basic Python knowledge.
+Build a complete Google Colab notebook for agricultural price forecasting:
+
+DATA ACQUISITION:
+- Install prophet via pip
+- Download monthly rice/wheat price data from:
+  https://www.fao.org/faostat/en/#data/PP
+- Create a DataFrame: date, commodity, modal_price
+
+EXPLORATORY ANALYSIS:
+1. Plot monthly modal price over time for 2 commodities (rice, wheat)
+2. Seasonal decomposition: trend + seasonality + residual (statsmodels STL)
+3. Box plot: price distribution by month (shows seasonality pattern)
+4. Heat map: average price by month × year
+
+FORECASTING WITH PROPHET:
+5. Prepare data in Prophet format: ds (date), y (modal_price)
+6. Add Indian festival holidays as special regressors (Diwali, Harvest season)
+7. Fit model, make 12-month forecast
+8. Plot: historical + forecast + uncertainty intervals
+9. Plot: trend component and yearly seasonality components
+
+EVALUATION:
+10. Last 6 months as holdout — compute MAE and MAPE
+11. Compare Prophet vs. naive (last-value) forecaster
+
+Add markdown explaining agricultural price cycles and mandi system.`},
+
+  { dept:"econ", title:"India State HDI & GDP Correlation", diff:"Beginner", dataset:"NITI Aayog / UNDP India state data", tools:"pandas, plotly, seaborn, scipy",
+    desc:"Build a state-level development dataset, plot an India choropleth, run Pearson/Spearman correlations, and design a composite Development Index.",
+    prompt:`I am a postgraduate Economics student with basic Python knowledge.
+Build a complete Google Colab notebook analysing Indian state-level development:
+
+DATA:
+- Create a DataFrame from published NITI Aayog and UNDP data (or load from GitHub CSV)
+  with 28 states + 8 UTs and columns:
+  state, region, gsdp_per_capita_2022, hdi_2022, literacy_rate,
+  infant_mortality_rate, life_expectancy, poverty_headcount_ratio,
+  urbanisation_rate, gini_coefficient
+
+EXPLORATORY ANALYSIS:
+1. Choropleth map of India: color states by HDI (plotly with India GeoJSON)
+2. Scatter plot: GSDP per capita vs. HDI — size=population, color=region
+3. Bar chart: top 10 and bottom 10 states by HDI
+
+CORRELATION ANALYSIS:
+4. Correlation matrix heatmap of all numeric variables
+5. Scatter plot with regression line: HDI vs. Infant Mortality Rate
+6. Compute Pearson and Spearman correlation for all pairs
+7. Identify which variable correlates most strongly with HDI
+
+INEQUALITY ANALYSIS:
+8. Plot Gini coefficient across states — bar chart, sorted
+9. Scatter: literacy rate vs. poverty rate — label outliers
+10. Rank states by a composite Development Index of your own design
+
+Add markdown explaining HDI methodology, Gini coefficient, and development economics.`},
+
+  { dept:"econ", title:"Stock Market Sentiment Analysis", diff:"Intermediate", dataset:"NSE / yfinance + financial news headlines", tools:"yfinance, NLTK, TextBlob, pandas, matplotlib",
+    desc:"Download NIFTY 50 price history, score financial news headlines with VADER, correlate sentiment with returns, and backtest a simple strategy.",
+    prompt:`I am a postgraduate Economics student with basic Python knowledge.
+Build a complete Google Colab notebook for stock market sentiment analysis:
+
+DATA ACQUISITION:
+- Install yfinance, textblob via pip
+- Download 2 years of daily NIFTY 50 price data:
+  import yfinance as yf; nifty = yf.download('^NSEI', start='2022-01-01', end='2024-01-01')
+- Load a pre-collected financial headlines CSV from a public GitHub URL
+
+PRICE ANALYSIS:
+1. Plot closing price with 20-day and 50-day moving averages
+2. Plot daily returns histogram — test for normality (scipy.stats.shapiro)
+3. Compute rolling 30-day volatility and plot it
+
+SENTIMENT ANALYSIS:
+4. Apply VADER (NLTK) sentiment scoring to each headline
+5. Compute daily average sentiment score (compound score)
+6. Plot: NIFTY returns (bar) and sentiment score (line) on dual-axis chart
+7. Compute Pearson correlation: next-day return vs. today's sentiment
+
+STRATEGY BACKTEST:
+8. Simple strategy: buy if sentiment > 0.1, sell if < -0.1, hold otherwise
+9. Compute cumulative returns of strategy vs. buy-and-hold
+10. Plot cumulative returns comparison
+11. Print: Sharpe ratio, max drawdown, total return
+
+Add markdown explaining efficient markets, sentiment indicators, and backtesting risks.`},
+
+  { dept:"econ", title:"Household Expenditure Pattern Analysis", diff:"Intermediate", dataset:"MOSPI HCES 2022-23 (public microdata)", tools:"pandas, matplotlib, seaborn, scipy",
+    desc:"Analyze Indian household expenditure with Engel curves, rural vs. urban comparisons, poverty headcount estimation, and Lorenz/Gini computation.",
+    prompt:`I am a postgraduate Economics student with basic Python knowledge.
+Build a complete Google Colab notebook analysing Indian household expenditure patterns:
+
+DATA:
+- Download HCES 2022-23 summary tables from MOSPI: https://mospi.gov.in/web/hces
+  Or generate synthetic microdata (1000 households) with:
+  household_id, sector (Rural/Urban), state, MPCE,
+  food_share, housing_share, clothing_share, education_share,
+  health_share, transport_share, durables_share, entertainment_share
+
+ENGEL CURVES:
+1. Bin households by MPCE into 10 deciles
+2. Plot Engel curves: MPCE decile vs. share for each expenditure category
+3. Verify Engel's Law (food share falls as income rises) using scipy.stats.spearmanr
+
+RURAL VS. URBAN:
+4. Side-by-side stacked bar charts: expenditure shares for Rural vs. Urban
+5. Box plots: MPCE distribution for Rural vs. Urban (use log scale)
+6. T-test comparing mean MPCE: rural vs. urban
+
+POVERTY ANALYSIS:
+7. Define poverty line as MPCE < ₹1800/month
+8. Compute poverty headcount ratio per state and per sector
+
+INEQUALITY:
+9. Compute and plot the Lorenz curve for MPCE
+10. Compute Gini coefficient from Lorenz curve
+11. Compare Gini for Rural vs. Urban separately
+
+Add markdown on Engel curves, expenditure inequality, and consumption poverty.`},
+
+  // BUSINESS
+  { dept:"biz", title:"Customer Churn Prediction (Telco)", diff:"Intermediate", dataset:"Telco Churn — Kaggle (public)", tools:"pandas, sklearn, xgboost, shap, matplotlib",
+    desc:"Load Telco churn dataset, train Logistic Regression + Random Forest + XGBoost, explain predictions with SHAP values, and compute revenue impact.",
+    prompt:`I am a postgraduate Business Administration student with basic Python knowledge.
+Build a complete Google Colab notebook for customer churn prediction:
+
+DATA ACQUISITION:
+- Download the Telco Customer Churn dataset:
+  https://raw.githubusercontent.com/IBM/telco-customer-churn-on-icp4d/master/data/Telco-Customer-Churn.csv
+
+DATA PREPARATION:
+1. Convert TotalCharges to numeric, fill missing with median
+2. Encode categorical variables: LabelEncoder for binary, pd.get_dummies() for multi-class
+3. Plot churn distribution (pie chart) — show class imbalance
+4. Correlation heatmap of top 15 features with Churn
+
+MODEL BUILDING:
+5. Split 80/20, scale with StandardScaler
+6. Train 3 models: Logistic Regression, Random Forest, XGBoost
+7. For each model, print: Accuracy, Precision, Recall, F1, AUC
+8. Plot ROC curves for all 3 models on one figure
+
+EXPLAINABILITY:
+9. Feature importance bar chart from Random Forest
+10. SHAP values plot for XGBoost (install shap via pip)
+11. Confusion matrix for the best model
+
+BUSINESS INSIGHTS:
+12. Print: "Top 5 features driving churn" with business recommendations
+13. Compute expected revenue saved if churn is reduced by 10%
+
+Add markdown explaining churn, model metrics, and how SHAP aids business decisions.`},
+
+  { dept:"biz", title:"Sales Forecasting Dashboard", diff:"Intermediate", dataset:"Superstore Sales (Kaggle public)", tools:"pandas, Prophet, plotly, statsmodels",
+    desc:"Build a Superstore dashboard with KPIs, seasonal decomposition, Facebook Prophet 12-month forecast, and customer cohort retention heatmap.",
+    prompt:`I am a postgraduate Business Administration student with basic Python knowledge.
+Build a complete Google Colab notebook for a sales forecasting dashboard:
+
+DATA ACQUISITION:
+- Download the Superstore dataset:
+  https://raw.githubusercontent.com/dsrscientist/dataset1/master/superstore.csv
+- Parse Order Date, aggregate daily sales to monthly
+
+EXPLORATORY DASHBOARD:
+1. KPI summary: Total Revenue, Total Orders, Average Order Value, Return Rate
+2. Monthly sales trend line chart (plotly)
+3. Sales by Category stacked bar chart (per month)
+4. Sales by Region — pie chart
+5. Top 10 products by revenue — horizontal bar chart
+
+SEASONAL DECOMPOSITION:
+6. Decompose monthly sales into trend + seasonal + residual (statsmodels STL)
+7. Plot all 4 components
+
+FORECASTING:
+8. Fit Facebook Prophet model with yearly seasonality
+9. Forecast next 12 months with confidence intervals
+10. Evaluate on last 6 months holdout: compute MAE, RMSE, MAPE
+
+COHORT ANALYSIS:
+11. Create a customer cohort table: acquisition month × months since acquisition
+12. Display as a heatmap (shows retention patterns)
+
+Add markdown explaining time series decomposition and what cohort analysis reveals.`},
+
+  { dept:"biz", title:"E-Commerce Review Sentiment NLP", diff:"Beginner", dataset:"Amazon Product Reviews (Kaggle public)", tools:"pandas, NLTK, TextBlob, wordcloud, matplotlib",
+    desc:"Analyze 10,000 Amazon reviews using VADER and LDA topic modelling, build positive vs. negative word clouds, and benchmark against star ratings.",
+    prompt:`I am a postgraduate Business Administration student with basic Python knowledge.
+Build a complete Google Colab notebook for e-commerce review sentiment analysis:
+
+DATA ACQUISITION:
+- Download Amazon product reviews from a public Kaggle CSV URL
+- Load 5000-10000 reviews; columns: review_text, star_rating
+
+PREPROCESSING:
+1. Clean text: remove HTML, punctuation, stopwords (NLTK)
+2. Plot: distribution of star ratings (bar chart)
+3. Plot: review length distribution (histogram)
+
+SENTIMENT ANALYSIS:
+4. Apply VADER SentimentIntensityAnalyzer — get compound score per review
+5. Classify: Positive (compound > 0.05), Negative (< -0.05), Neutral
+6. Confusion matrix: VADER sentiment vs. star rating ground truth
+7. Compute: accuracy, precision of VADER vs. star rating
+
+TOPIC & THEME EXTRACTION:
+8. Word cloud for positive reviews and separate word cloud for negative reviews
+9. TF-IDF top 20 terms in positive vs. negative reviews (bar chart comparison)
+10. LDA topic modelling — extract 5 topics, print top 10 words per topic
+
+BUSINESS INSIGHTS:
+11. Print: most common complaints and most common praise points
+
+Add markdown explaining NLP, VADER, TF-IDF, and what topics mean for product teams.`},
+
+  { dept:"biz", title:"Supply Chain Risk Heatmap", diff:"Intermediate", dataset:"Synthetic suppliers + World Bank Governance API", tools:"pandas, geopandas, folium, requests, plotly",
+    desc:"Build a 50-supplier database, fetch governance risk scores from World Bank API, compute composite Risk Score Index, and create an interactive supply chain map.",
+    prompt:`I am a postgraduate Business Administration student with basic Python knowledge.
+Build a complete Google Colab notebook for supply chain risk analysis:
+
+SETUP:
+- Install geopandas, folium via pip
+- Create a synthetic supplier database (50 suppliers across 20 countries):
+  supplier_id, supplier_name, country, latitude, longitude,
+  category (raw_material/component/logistics), annual_spend_USD, lead_time_days
+
+RISK DATA INTEGRATION:
+1. Fetch country-level risk scores from the World Bank Governance Indicators API:
+   http://api.worldbank.org/v2/country/all/indicator/CC.EST?format=json
+2. Merge risk scores with supplier DataFrame
+3. Add synthetic scores for: natural_disaster_risk, geopolitical_risk, port_congestion_index
+
+RISK SCORING:
+4. Compute a composite Supplier Risk Score:
+   RSI = 0.3*corruption_risk + 0.25*disaster_risk + 0.25*geopolitical + 0.2*lead_time_normalized
+5. Classify: High (>70), Medium (40-70), Low (<40)
+
+VISUALIZATIONS:
+6. Choropleth world map: country risk level
+7. Folium map: supplier locations (red=high, amber=medium, green=low risk)
+   with popup showing: supplier name, category, spend, risk score
+8. Bubble chart: annual spend vs. risk score
+9. Concentration risk: pie chart of spend by country
+
+Add markdown on supply chain risk and resilience strategies.`},
+
+  { dept:"biz", title:"HR Attrition Analytics", diff:"Beginner", dataset:"IBM HR Analytics (Kaggle public)", tools:"pandas, seaborn, sklearn, matplotlib",
+    desc:"Analyze the IBM HR dataset for attrition predictors, train Decision Tree and Logistic Regression models, and visualize the decision tree (depth 3).",
+    prompt:`I am a postgraduate Business Administration student with basic Python knowledge.
+Build a complete Google Colab notebook for HR attrition analysis:
+
+DATA ACQUISITION:
+- Download the IBM HR Analytics Employee Attrition dataset:
+  https://raw.githubusercontent.com/dsrscientist/dataset1/master/HR-Employee-Attrition.csv
+
+EXPLORATORY ANALYSIS:
+1. Attrition rate by Department — grouped bar chart
+2. Attrition rate by Job Role — horizontal bar chart, sorted by rate
+3. Box plots: Monthly Income for Attrition=Yes vs. No
+4. Box plots: Age for Attrition=Yes vs. No
+5. Stacked bar: attrition rate by OverTime (Yes/No)
+
+CORRELATION:
+6. Point-biserial correlation of each numeric feature with Attrition
+7. Bar chart of top 10 most correlated features
+
+PREDICTIVE MODEL:
+8. Encode categoricals, split 80/20
+9. Train Logistic Regression + Decision Tree
+10. Print accuracy, F1, AUC for both
+11. Decision Tree feature importances — bar chart
+12. Decision Tree visualization (sklearn.tree.plot_tree) — max depth 3
+
+ACTIONABLE INSIGHTS:
+13. Print: top 3 factors associated with staying vs. leaving
+14. Identify department + job role combination with highest attrition risk
+
+Add markdown on people analytics and ethical data use.`},
+
+  // GIS
+  { dept:"gis", title:"LULC Change Detection (Satellite)", diff:"Intermediate", dataset:"Landsat / Sentinel-2 via USGS EarthExplorer", tools:"rasterio, numpy, sklearn, matplotlib, geopandas",
+    desc:"Classify multispectral images into 4 LULC classes using Random Forest, produce change maps for two years, and compute urban expansion in km².",
+    prompt:`I am a postgraduate Remote Sensing & GIS student with basic Python knowledge.
+Build a complete Google Colab notebook for Land Use Land Cover (LULC) change detection:
+
+SETUP:
+- Install rasterio, geopandas via pip
+- Download two multispectral images for two time periods (2013 and 2023)
+  for a region showing urban growth (e.g., Pune or Hyderabad)
+  from USGS EarthExplorer or use pre-staged GeoTIFFs from a public GitHub URL
+
+PREPROCESSING:
+1. Load bands using rasterio, stack into a multi-band numpy array
+2. Compute indices: NDVI, NDWI, NDBI for both years
+3. Plot: False Color Composite (NIR-R-G) for both years side by side
+
+CLASSIFICATION:
+4. Sample training pixels for 4 classes: Urban, Vegetation, Water, Bare Soil
+5. Train a Random Forest classifier on Year 1 image (sklearn)
+6. Predict LULC map for both Year 1 and Year 2
+7. Plot: both LULC maps with a 4-color legend
+
+CHANGE ANALYSIS:
+8. Compute pixel-wise change map
+9. Create a change matrix (4x4 transition table)
+10. Bar chart: net area change per class (in km²)
+11. Print: total urban expansion in km², total vegetation loss in km²
+
+Add markdown on LULC classification and urban expansion remote sensing.`},
+
+  { dept:"gis", title:"Flood Inundation Mapping (SAR)", diff:"Intermediate", dataset:"Copernicus Sentinel-1 SAR (public)", tools:"rasterio, numpy, geopandas, folium, scipy",
+    desc:"Process Sentinel-1 SAR backscatter imagery, apply speckle filtering, threshold flood detection, estimate affected population, and build a Folium map.",
+    prompt:`I am a postgraduate Remote Sensing & GIS student with basic Python knowledge.
+Build a complete Google Colab notebook for flood inundation mapping using SAR imagery:
+
+SETUP:
+- Install rasterio, geopandas, folium via pip
+- Download Sentinel-1 GRD SAR images (VV polarization) for a flood event in India
+  (e.g., Assam 2022 flood) — before-flood and during-flood images
+  (Use pre-processed GeoTIFF files from a public repository if needed)
+
+SAR PROCESSING:
+1. Load both SAR images using rasterio
+2. Convert DN to dB: backscatter_dB = 10 * log10(DN^2)
+3. Apply a 5x5 median filter to reduce speckle noise (scipy.ndimage)
+4. Plot: before-flood and during-flood backscatter images side by side
+
+FLOOD DETECTION:
+5. Compute change ratio: during_dB - before_dB
+6. Apply a threshold (e.g., -3 dB decrease = potential flood)
+7. Create binary flood mask
+8. Apply morphological operations to clean noise
+9. Plot: flood inundation map on a basemap
+
+IMPACT ASSESSMENT:
+10. Load a population raster or synthetic grid of population density
+11. Overlay flood mask with population raster
+12. Estimate total affected population and flooded area in km²
+
+FINAL MAP:
+13. Create an interactive folium map with flood layer + basemap
+
+Add markdown explaining SAR backscatter, why water looks dark, and flood mapping workflow.`},
+
+  { dept:"gis", title:"Urban Heat Island Analysis (Landsat)", diff:"Beginner", dataset:"USGS Landsat Collection 2 (public)", tools:"rasterio, numpy, matplotlib, geopandas",
+    desc:"Compute Land Surface Temperature from Landsat Band 10 for a major Indian city, compare urban vs. rural LST zones, and correlate with NDVI.",
+    prompt:`I am a postgraduate Remote Sensing & GIS student with basic Python knowledge.
+Build a complete Google Colab notebook for Urban Heat Island (UHI) analysis using Landsat:
+
+DATA ACQUISITION:
+- Install rasterio via pip
+- Download a Landsat 8 / Landsat 9 scene for a large Indian city (e.g., Chennai or Delhi)
+  including: Band 4 (Red), Band 5 (NIR), Band 10 (Thermal Infrared / TIRS)
+  from USGS EarthExplorer or use public pre-processed GeoTIFF from GitHub
+
+LST COMPUTATION:
+1. Load Band 10 (DN values) using rasterio
+2. Convert DN to Top-of-Atmosphere spectral radiance
+3. Convert radiance to brightness temperature (BT) in Kelvin
+4. Compute NDVI from Band 4 and Band 5
+5. Estimate Land Surface Emissivity (LSE) from NDVI
+6. Compute final Land Surface Temperature (LST) in °C
+
+ANALYSIS:
+7. Plot LST map with a thermal colormap (hot = red, cool = blue)
+8. Define: urban core, residential, peri-urban, rural buffer zones
+9. Box plot: LST distribution for each zone
+10. Print: mean LST per zone, UHI intensity = urban_LST - rural_LST
+
+NDVI-LST RELATIONSHIP:
+11. Scatter plot: NDVI vs. LST (negative correlation expected)
+12. Compute and print Pearson correlation
+
+Add markdown explaining urban heat islands, LST algorithm, and climate implications.`},
+
+  { dept:"gis", title:"Groundwater Potential Zone Mapping", diff:"Intermediate", dataset:"SRTM DEM + Bhuvan thematic layers (public)", tools:"rasterio, geopandas, numpy, matplotlib, sklearn",
+    desc:"Integrate geology, slope, drainage density, NDVI, and rainfall in a weighted MCDA workflow to produce a 5-class groundwater potential zone map.",
+    prompt:`I am a postgraduate Remote Sensing & GIS student with basic Python knowledge.
+Build a complete Google Colab notebook for groundwater potential zone mapping:
+
+SETUP:
+- Install rasterio, geopandas via pip
+- Download for a Deccan Plateau study area:
+  a) SRTM 30m DEM from USGS — derive slope & drainage density
+  b) NDVI from Landsat (Band 4, Band 5)
+  c) Lineament density (from Bhuvan or synthesize)
+  d) Rainfall (annual average from IMD or synthetic raster)
+  (Alternative: generate all layers as synthetic numpy arrays for the same AOI)
+
+LAYER PREPARATION:
+1. Derive from DEM: Slope, Drainage Density
+2. Compute NDVI from Landsat bands
+3. Resample all layers to same resolution and extent
+4. Normalize all layers to 0-1 scale
+
+WEIGHTED INDEX OVERLAY:
+5. Assign weights based on hydrogeological importance:
+   Drainage density: 25%, Lineament density: 20%, NDVI: 15%,
+   Rainfall: 20%, Slope (inverse): 20%
+6. Compute: GWPZ_score = Σ(weight_i × normalized_layer_i)
+7. Classify into 5 zones: Very High, High, Moderate, Low, Very Low
+
+VISUALIZATIONS:
+8. Plot each input layer individually
+9. Plot final Groundwater Potential Zone map with 5-class legend
+10. Area statistics: pie chart of % area in each zone
+11. Overlay with synthetic bore well locations — verify accuracy
+
+Add markdown explaining Multi-Criteria Decision Analysis and groundwater science.`},
+
+  { dept:"gis", title:"Crop Health Monitoring with NDVI", diff:"Beginner", dataset:"MODIS MOD13Q1 / Google Earth Engine (public)", tools:"earthengine-api, pandas, matplotlib, numpy",
+    desc:"Extract NDVI time series for agricultural fields via Google Earth Engine, detect crop phenology stages, flag stressed fields, and compute anomalies.",
+    prompt:`I am a postgraduate Remote Sensing & GIS student with basic Python knowledge.
+Build a complete Google Colab notebook for crop health monitoring using NDVI time series:
+
+SETUP (2 OPTIONS):
+OPTION A - Google Earth Engine:
+- Install earthengine-api via pip
+- Authenticate: import ee; ee.Authenticate(); ee.Initialize()
+- Define a region of interest (agricultural area in Punjab or Odisha)
+- Load MODIS MOD13Q1 (250m NDVI) time series for 2022-2023
+- Reduce region to mean NDVI per image date — export as pandas DataFrame
+
+OPTION B - Direct MODIS Download:
+- Download MOD13Q1 HDF files from NASA Earthdata for 4 dates
+- Use pyhdf or gdal to extract NDVI layer
+
+NDVI TIME SERIES ANALYSIS:
+1. Plot NDVI vs. date line chart — identify crop growth cycles
+2. Identify: green-up date, peak NDVI date, senescence date
+   (use scipy.signal.find_peaks)
+3. Compare NDVI profiles for 3 different field polygons
+
+CROP PHENOLOGY:
+4. Compute growing season statistics per field:
+   max NDVI, mean NDVI, growing season length
+5. Flag stressed fields: NDVI < 0.3 at peak season
+6. Compute NDVI anomaly: current year vs. 3-year average
+
+VISUALIZATION:
+7. Multi-year NDVI comparison on one chart
+8. Bar chart: crop stress index per field
+
+Add markdown explaining NDVI, crop phenology stages, and precision agriculture.`}
+];
+
+// ── BUILD TABS ───────────────────────────────────────────────────────────────
+const tabsEl = document.getElementById('deptTabs');
+departments.forEach(d => {
+  const btn = document.createElement('button');
+  btn.className = 'dept-tab' + (d.id === 'all' ? ' active' : '');
+  btn.textContent = (d.emoji ? d.emoji + ' ' : '') + d.name;
+  btn.dataset.dept = d.id;
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.dept-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterCases(d.id, document.getElementById('searchInput').value);
+  });
+  tabsEl.appendChild(btn);
+});
+
+// ── BUILD CARDS ───────────────────────────────────────────────────────────────
+const grid = document.getElementById('casesGrid');
+
+function buildCards(filtered) {
+  grid.innerHTML = '';
+  const noR = document.getElementById('noResults');
+  if (filtered.length === 0) { noR.style.display = 'block'; return; }
+  noR.style.display = 'none';
+
+  filtered.forEach((c, i) => {
+    const dept = departments.find(d => d.id === c.dept);
+    const card = document.createElement('div');
+    card.className = 'case-card';
+    card.innerHTML = `
+      <span class="diff-badge ${c.diff === 'Beginner' ? 'diff-beginner' : 'diff-intermediate'}">${c.diff}</span>
+      <span class="case-dept-label ${dept.colorClass}">${dept.emoji} ${dept.name}</span>
+      <div class="case-title">${c.title}</div>
+      <div class="case-desc">${c.desc}</div>
+      <div class="case-meta">
+        <span><b>Dataset:</b> ${c.dataset}</span>
+        <span><b>Tools:</b> ${c.tools}</span>
+      </div>
+      <button class="view-prompt-btn" data-idx="${cases.indexOf(c)}">View Prompt →</button>
+    `;
+    grid.appendChild(card);
+  });
+
+  document.querySelectorAll('.view-prompt-btn').forEach(btn => {
+    btn.addEventListener('click', () => openModal(parseInt(btn.dataset.idx)));
+  });
+}
+
+function filterCases(deptId, query) {
+  let filtered = deptId === 'all' ? cases : cases.filter(c => c.dept === deptId);
+  if (query && query.trim()) {
+    const q = query.toLowerCase();
+    filtered = filtered.filter(c =>
+      c.title.toLowerCase().includes(q) ||
+      c.desc.toLowerCase().includes(q) ||
+      c.tools.toLowerCase().includes(q) ||
+      c.dataset.toLowerCase().includes(q)
+    );
+  }
+  buildCards(filtered);
+}
+
+buildCards(cases);
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  const active = document.querySelector('.dept-tab.active');
+  filterCases(active ? active.dataset.dept : 'all', e.target.value);
+});
+
+// ── MODAL ─────────────────────────────────────────────────────────────────────
+function openModal(idx) {
+  const c = cases[idx];
+  const dept = departments.find(d => d.id === c.dept);
+  document.getElementById('mDept').textContent = dept.emoji + ' ' + dept.name;
+  document.getElementById('mDept').style.color = 'var(--accent)';
+  document.getElementById('mTitle').textContent = c.title;
+  document.getElementById('mBadges').innerHTML = `
+    <span class="modal-badge ${c.diff === 'Beginner' ? 'diff-beginner' : 'diff-intermediate'}">${c.diff}</span>
+    <span class="modal-badge mb-dataset">📦 ${c.dataset}</span>
+    <span class="modal-badge mb-tools">🛠 ${c.tools}</span>
+  `;
+  document.getElementById('mPrompt').textContent = c.prompt;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  document.getElementById('copyBtn').onclick = () => {
+    navigator.clipboard.writeText(c.prompt).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = '📋 Copy Prompt'; btn.classList.remove('copied'); }, 2000);
+    });
+  };
+}
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── NAV TOGGLE ────────────────────────────────────────────────────────────────
+document.getElementById('navToggle').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+// ── SCROLL ANIMATIONS ─────────────────────────────────────────────────────────
+const fadeEls = document.querySelectorAll('.fade-up');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+fadeEls.forEach(el => observer.observe(el));
+
+// ── COUNTER ANIMATION ─────────────────────────────────────────────────────────
+function animateCounters() {
+  document.querySelectorAll('.stat-num').forEach(el => {
+    const target = parseInt(el.textContent);
+    if (isNaN(target)) return;
+    let start = 0;
+    const step = target / 40;
+    const timer = setInterval(() => {
+      start = Math.min(start + step, target);
+      el.textContent = Math.round(start) + (el.textContent.includes('%') ? '%' : '');
+      if (start >= target) clearInterval(timer);
+    }, 30);
+  });
+}
+
+const statsObs = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) { animateCounters(); statsObs.disconnect(); }
+}, { threshold: 0.5 });
+const statsEl = document.querySelector('.stats-strip');
+if (statsEl) statsObs.observe(statsEl);
+</script>
+</body>
+</html>
